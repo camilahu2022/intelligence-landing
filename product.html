@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Selected Work — Intelligence That Grows With You</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <link
+    href="https://db.onlinewebfonts.com/c/8cb707a9b8a73f8a7403336b861c3074?family=BubbledotICG-FinePos"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css?v=2" />
+</head>
+<body class="scroll-page">
+  <div class="bg" aria-hidden="true">
+    <video class="bg-video" autoplay muted loop playsinline>
+      <source
+        src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260809_012548_ef22562c-c0ae-4816-ad9d-f8922af4e6a7.mp4"
+        type="video/mp4"
+      />
+    </video>
+  </div>
+
+  <div class="page page-scroll">
+    <header class="header">
+      <a class="logo" href="index.html" aria-label="Home">
+        <img src="assets/logo.webp" alt="" width="52" height="52" />
+      </a>
+
+      <nav class="nav-pill" aria-label="Primary">
+        <a class="nav-link" href="index.html">Home</a>
+        <a class="nav-link active" href="product.html">Product</a>
+        <a class="nav-link" href="profile.html">Profile</a>
+        <a class="nav-link" href="contact.html">Contact</a>
+      </nav>
+
+      <button
+        class="burger"
+        type="button"
+        aria-label="Menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <span></span><span></span><span></span>
+      </button>
+    </header>
+
+    <main class="work">
+      <h1 class="work-title">
+        <span class="line">Selected</span>
+        <span class="line">Work</span>
+      </h1>
+
+      <p class="work-sub anim" style="--d: 0.3s">
+        Things I've designed and shipped with AI.
+      </p>
+
+      <div class="cards">
+        <!-- Featured: 构式小课堂 -->
+        <article class="card featured anim" style="--d: 0.42s">
+          <div class="card-media">
+            <img src="assets/shot-construct-v3.png" alt="构式小课堂学习地图" />
+          </div>
+          <div class="card-body">
+            <div class="card-top">
+              <h2 class="card-title">Con Mandarin</h2>
+              <span class="badge badge-wip">In design</span>
+            </div>
+            <p class="card-tagline">
+              面向新西兰中学生汉语外语学习者的情境式汉语构式学习应用
+            </p>
+            <ul class="card-points">
+              <li>一张学习地图：将零散学习素材整合为可追踪的完整学习路径</li>
+              <li>5 个等级任务：包含单词卡片、填空题、场景选择类练习</li>
+              <li>情境对话模块：搭配 AI 模拟回复功能</li>
+            </ul>
+            <p class="card-tagline">
+              A scenario-based Chinese construction learning app for New Zealand
+              secondary students learning Chinese as a foreign language.
+            </p>
+            <ul class="card-points">
+              <li>A learning map that ties scattered materials into one traceable path</li>
+              <li>5-level quests with word cards, fill-in and scene-choice drills</li>
+              <li>Scenario dialogue with simulated AI replies</li>
+            </ul>
+            <div class="card-tags">
+              <span>HTML / CSS / JS</span>
+              <span>localStorage</span>
+              <span>Duolingo-style UI</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Compact: J人计划规划工具 -->
+        <article class="card compact anim" style="--d: 0.52s">
+          <div class="card-body">
+            <div class="card-top">
+              <h2 class="card-title">Plans owner J人计划</h2>
+              <span class="badge badge-wip">In design</span>
+            </div>
+            <p class="card-tagline">
+              它不是一个又一个日历 / 清单工具，而是一台用来剪辑生活的软件。<br />
+              灵感来自剪辑软件 + 课表：像在时间线上拖素材一样，拖动、调节自己的生活。<br />
+              计划池的来源则是每个人都是自己生活的主角：桌面的物品就是舞台上的道具，聚光灯打在谁身上，就照亮你生活里的那一段所想所思。<br />
+              灵魂是实景到水彩的魔术，让J 人本来就爱做的事，同时变成一本有温度、可收藏的生活手账。
+            </p>
+            <div class="card-screens card-screens--flow">
+              <img
+                src="assets/shot-plan-j-flow.png"
+                alt="J人计划交互流程：月视图 → 计划池 → 灯光照射 → 点亮贴起来 → 周视图"
+              />
+            </div>
+            <div class="card-tags">
+              <span>HTML / CSS / JS</span>
+              <span>Hand-drawn UI</span>
+              <span>Prototype</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Compact: lj-tray -->
+        <article class="card compact anim" style="--d: 0.62s">
+          <div class="card-body">
+            <div class="card-top">
+              <h2 class="card-title">逻辑训练Tray插件</h2>
+              <span class="badge badge-wip">v0.1.0</span>
+            </div>
+            <p class="card-tagline">
+              设计初衷：每次等待 AI 运作的那段间隙，正是训练产品逻辑基本功的好时机。<br />
+              那么一起把零碎时间变成刻意练习吧。
+            </p>
+            <div class="card-screens card-screens--tray">
+              <img src="assets/shot-lj-tray-1.png" alt="逻辑训练Tray插件 macOS 菜单栏界面" />
+              <img src="assets/shot-lj-tray-2.png" alt="逻辑训练Tray插件答题界面" />
+            </div>
+            <div class="card-tags">
+              <span>Electron 31</span>
+              <span>Node.js</span>
+              <span>HTML / CSS / JS</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </main>
+  </div>
+
+  <div class="menu-overlay" hidden></div>
+  <div class="menu-sheet" id="mobile-menu" hidden>
+    <a class="menu-link" href="index.html">Home</a>
+    <a class="menu-link active" href="product.html">Product</a>
+    <a class="menu-link" href="profile.html">Profile</a>
+    <a class="menu-link" href="contact.html">Contact</a>
+  </div>
+
+  <script src="main.js?v=2" defer></script>
+</body>
+</html>
