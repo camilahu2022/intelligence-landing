@@ -952,7 +952,7 @@ body {
 .spinoff-device iframe {
   display: block;
   width: 100%;
-  height: 470px;
+  height: 458px;
   border: 0;
   background: transparent;
 }
@@ -963,7 +963,7 @@ body {
   }
 
   .spinoff-device iframe {
-    height: 470px;
+    height: 458px;
   }
 }
 

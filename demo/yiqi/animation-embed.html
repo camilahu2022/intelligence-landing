@@ -7,13 +7,21 @@
   <title>一起去 · 操作动画</title>
   <style>
     * { box-sizing: border-box; }
-    html, body { background: transparent; }
-    body {
+    html, body {
       margin: 0;
-      min-height: 100vh;
+      height: 100%;
+      overflow: hidden;
+      background: transparent;
+    }
+    body {
       display: grid;
       place-items: center;
       font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    .stage {
+      width: 234px;
+      height: 450px;
+      overflow: hidden;
     }
     .device {
       position: relative;
@@ -23,9 +31,8 @@
       border: 7px solid #242932;
       border-radius: 38px;
       background: #fff;
-      box-shadow: 0 18px 50px rgba(20, 30, 50, 0.35);
       transform: scale(0.6);
-      transform-origin: center center;
+      transform-origin: top left;
     }
     .device::before {
       position: absolute;
@@ -58,9 +65,11 @@
   </style>
 </head>
 <body>
-  <div class="device">
-    <iframe id="product" title="一起去实际产品操作演示" tabindex="-1"></iframe>
-    <div class="load-note" id="load-note">正在准备空白计划…</div>
+  <div class="stage">
+    <div class="device">
+      <iframe id="product" title="一起去实际产品操作演示" tabindex="-1"></iframe>
+      <div class="load-note" id="load-note">正在准备空白计划…</div>
+    </div>
   </div>
   <script>
     const frame = document.querySelector('#product');
