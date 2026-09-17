@@ -1,0 +1,978 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7fb">
+  <title>一起去 · 双模式旅行计划协作 Demo</title>
+  <script>
+    document.documentElement.dataset.scenario = new URLSearchParams(location.search).get('state') === 'demo' ? 'demo' : 'empty';
+    document.documentElement.classList.toggle('embedded', new URLSearchParams(location.search).get('embed') === '1');
+  </script>
+  <style>
+    :root {
+      --ink: #202c3e;
+      --muted: #687387;
+      --line: #e0e4eb;
+      --blue: #3158d5;
+      --blue-dark: #2345b5;
+      --blue-soft: #edf2ff;
+      --lavender: #f1efff;
+      --cream: #fff8e8;
+      --mint: #eaf8f2;
+      --canvas: #f5f7fb;
+      --card: #fff;
+      --phone: #20242d;
+      --shadow: 0 30px 90px rgba(31, 47, 82, .16);
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; color: var(--ink); background: radial-gradient(ellipse at 51% 40%, #e8edf8 0, transparent 56%), #f4f3ef; font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; -webkit-font-smoothing: antialiased; }
+    button, input { font: inherit; }
+    button { color: inherit; -webkit-tap-highlight-color: transparent; }
+    :focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
+    .page { display: grid; grid-template-columns: minmax(0, 1.1fr) 390px minmax(240px, .85fr); gap: clamp(28px, 4vw, 64px); align-items: center; width: min(1440px, 100%); min-height: 100vh; margin: 0 auto; padding: 38px clamp(24px, 4vw, 64px); }
+    .brand { display: flex; align-items: center; gap: 11px; margin-bottom: 64px; }
+    .brand-icon, .mini-brand-icon { display: grid; place-items: center; color: #fff; background: var(--blue); }
+    .brand-icon { width: 36px; height: 36px; border-radius: 11px; transform: rotate(-6deg); }
+    .mini-brand-icon { width: 26px; height: 26px; border-radius: 8px; }
+    .brand-icon svg, .mini-brand-icon svg { width: 16px; }
+    .brand b { display: block; font-size: 19px; letter-spacing: -.04em; }
+    .brand small { color: var(--muted); font-size: 10px; letter-spacing: .02em; }
+    .eyebrow { margin: 0 0 18px; color: var(--blue); font-size: 11px; font-weight: 650; letter-spacing: .16em; }
+    .intro h1 { margin: 0; font-size: clamp(40px, 3.4vw, 51px); font-weight: 650; letter-spacing: -.065em; line-height: 1.3; }
+    .intro h1 em { display: block; color: var(--blue); font-style: normal; white-space: nowrap; }
+    .intro-copy { margin: 26px 0 0; color: var(--muted); font-size: 14px; line-height: 2; }
+    .intro-copy strong { color: var(--ink); font-weight: 500; }
+    .journey-mark { width: min(255px, 100%); margin-top: 36px; color: #8796b6; }
+    .journey-mark svg { display: block; width: 100%; height: 64px; }
+    .journey-mark span { display: block; margin-top: 6px; color: var(--muted); font-size: 10px; letter-spacing: .12em; }
+
+    .phone-wrap { position: relative; justify-self: center; }
+    .phone-halo { position: absolute; inset: 12% -25%; z-index: -1; border-radius: 50%; background: rgba(255,255,255,.75); filter: blur(8px); }
+    .phone {
+      position: relative;
+      width: 390px;
+      height: min(800px, calc(100vh - 64px));
+      min-height: 690px;
+      overflow: hidden;
+      border: 8px solid var(--phone);
+      border-radius: 47px;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+    .phone::before {
+      position: absolute;
+      z-index: 30;
+      top: 0;
+      left: 50%;
+      width: 112px;
+      height: 28px;
+      border-radius: 0 0 18px 18px;
+      background: var(--phone);
+      transform: translateX(-50%);
+      content: "";
+    }
+    .phone-screen { position: relative; height: 100%; overflow: hidden; background: #fff; }
+    .screen-content { height: 100%; padding: 43px 20px 28px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
+    .screen-content::-webkit-scrollbar { display: none; }
+    .phone-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .phone-brand { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 750; letter-spacing: -.05em; }
+    .head-actions { display: flex; }
+    .icon-button { display: grid; width: 44px; height: 44px; padding: 0; place-items: center; border: 1px solid #e7eaf1; border-radius: 50%; color: #55617a; background: #fff; cursor: pointer; }
+    .icon-button svg { width: 17px; height: 17px; }
+    .icon-button:hover { background: var(--blue-soft); }
+    .mode-switch { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 25px; padding: 4px; border-radius: 12px; background: #f0f2f6; }
+    .mode-button { min-height: 42px; padding: 8px; border: 0; border-radius: 8px; color: #687387; background: transparent; font-size: 12px; font-weight: 600; cursor: pointer; transition: background .2s, color .2s; }
+    .mode-button span { margin-right: 5px; font-family: Georgia, serif; font-size: 18px; }
+    .mode-button.active { color: var(--blue); background: #fff; box-shadow: 0 2px 5px #2635510c; }
+    .mode-view { display: none; animation: view-in .25s ease; }
+    .mode-view.active { display: block; }
+    @keyframes view-in { from { opacity: 0; } }
+    .title-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .title-row > div:first-child { min-width: 0; }
+    .destination-label { margin: 0 0 10px; color: #63718a; font-size: 9px; letter-spacing: .07em; }
+    .mode-view h2 { margin: 0; font-size: 28px; letter-spacing: -.045em; line-height: 1.2; }
+    .screen-sub { margin: 9px 0 0; color: var(--muted); font-size: 11px; line-height: 1.6; font-variant-numeric: tabular-nums; }
+    .member-stack { display: flex; flex: 0 0 auto; flex-direction: row-reverse; justify-content: flex-end; }
+    .avatar { display: grid; width: 25px; height: 25px; margin-left: -8px; place-items: center; border: 2px solid white; border-radius: 50%; color: #80532d; background: #f0dfcc; font-size: 9px; font-weight: 650; }
+    .avatar:nth-child(2) { color: #365f53; background: #d4e7de; }
+    .avatar:nth-child(3) { color: #3f5c86; background: #dae3f2; }
+    .avatar:nth-child(4) { color: #705d85; background: #e8dfef; }
+
+    .pocket { position: relative; margin-top: 24px; padding: 16px; border: 1px solid #e1e6f2; border-radius: 20px; background: #eff3fc; }
+    .card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .card-head b { font-size: 14px; letter-spacing: -.02em; }
+    .card-head span { color: var(--muted); font-size: 11px; }
+    .drop-zone { position: relative; display: flex; width: 100%; min-height: 96px; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; padding: 18px 16px; border: 0; border-radius: 12px 12px 20px 20px; color: white; background: var(--blue); text-align: left; cursor: pointer; transition: background .2s; }
+    .drop-zone::after { position: absolute; inset: 5px; border: 1px dashed rgba(255,255,255,.3); border-radius: 9px 9px 16px 16px; pointer-events: none; content: ""; }
+    .drop-zone:hover { background: var(--blue-dark); }
+    .drop-plus { display: grid; flex: 0 0 36px; height: 36px; place-items: center; border-radius: 50%; color: var(--blue); background: #fff; font-size: 25px; font-weight: 400; }
+    .drop-core b { display: block; font-size: 15px; font-weight: 650; }
+    .drop-core small { display: block; margin-top: 7px; color: #e3eaff; font-size: 11px; }
+    .inspiration-strip { display: flex; gap: 8px; margin-top: 12px; overflow-x: auto; padding: 2px 0; scrollbar-width: none; scroll-snap-type: x proximity; }
+    .inspiration-strip::-webkit-scrollbar { display: none; }
+    .inspiration-chip { display: grid; flex: 0 0 150px; grid-template-columns: 32px minmax(0, 1fr); gap: 9px; align-items: center; padding: 10px; border: 1px solid #e4e8f1; border-radius: 11px; background: white; scroll-snap-align: start; }
+    .food-symbol { display: grid; width: 32px; height: 36px; place-items: center; border: 1px solid #ebd6bf; border-radius: 5px; color: #89551e; background: #fff4e5; font-family: "Songti SC", serif; font-size: 17px; }
+    .place-symbol { color: #376b59; border-color: #d0e1d9; background: #edf6f1; }
+    .travel-symbol { color: #41629a; border-color: #d9e2f2; background: #eff3fb; }
+    .inspiration-chip b { display: block; overflow: hidden; font-size: 12px; white-space: nowrap; text-overflow: ellipsis; }
+    .chip-meta { display: block; margin-top: 5px; color: var(--muted); font-size: 10px; }
+
+    .plan-glance { margin-top: 24px; }
+    .day-glance-list { display: grid; margin-top: 12px; border-top: 1px solid var(--line); }
+    .day-glance { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 13px; align-items: center; min-height: 55px; padding: 10px 2px; border-bottom: 1px solid var(--line); }
+    .day-number { color: var(--blue); font-family: Georgia, serif; font-size: 23px; line-height: 1; }
+    .day-number small { display: block; margin-top: 4px; color: var(--muted); font-family: ui-sans-serif, sans-serif; font-size: 8px; letter-spacing: .14em; }
+    .day-copy { min-width: 0; }
+    .day-copy b { display: block; font-size: 12px; font-weight: 550; line-height: 1.7; overflow-wrap: anywhere; }
+    .day-glance.open .day-number, .day-glance.open .day-copy b { color: #747c8a; }
+    .day-glance.open .day-copy b { font-weight: 400; }
+
+    .important-summary { margin-top: 18px; padding: 0 13px; border: 1px solid #eadfc9; border-radius: 12px; background: var(--cream); }
+    .important-summary summary { display: flex; min-height: 52px; align-items: center; gap: 8px; list-style: none; cursor: pointer; }
+    .important-summary summary::-webkit-details-marker { display: none; }
+    .important-summary summary b { flex: 1; font-size: 12px; }
+    .important-summary summary span { color: #866427; font-size: 10px; }
+    .disclosure-arrow { transition: transform .2s; }
+    .important-summary[open] .disclosure-arrow { transform: rotate(180deg); }
+    .important-summary[open] { padding-bottom: 14px; }
+    .summary-line { display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; gap: 7px; align-items: center; margin-top: 12px; color: #68604e; font-size: 11px; }
+    .summary-line svg { width: 14px; color: #8b692d; }
+    .summary-line strong { color: #866427; font-size: 10px; font-weight: 600; }
+
+    .section-head { display: flex; align-items: center; justify-content: space-between; margin: 13px 0 4px; }
+    .section-head b { font-size: 14px; }
+    .section-head b span { margin-left: 5px; color: var(--muted); font-size: 12px; font-weight: 400; }
+    .text-action { min-height: 40px; padding: 8px 0 8px 10px; border: 0; color: var(--blue); background: transparent; font-size: 11px; cursor: pointer; }
+    .prep-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; margin-top: 22px; }
+    .prep-pill { padding: 12px 9px; border: 1px solid var(--line); border-radius: 10px; background: white; text-align: left; }
+    button.prep-pill { cursor: pointer; }
+    .prep-pill b { display: block; font-size: 11px; white-space: nowrap; }
+    .prep-pill span { display: block; margin-top: 6px; color: var(--muted); font-size: 10px; }
+    .prep-pill.waiting { border-color: #e7d8b8; background: var(--cream); }
+    .prep-pill.waiting span { color: #866427; }
+    .prep-pill.done span { color: #376d57; }
+    .schedule-card { overflow: hidden; border: 1px solid #d7deeb; border-radius: 12px; background: white; }
+    .schedule-toolbar { display: flex; align-items: center; justify-content: space-between; padding: 12px; border-bottom: 1px dashed #cbd6ed; background: #eef3fc; }
+    .schedule-toolbar span { color: var(--muted); font-size: 10px; }
+    .schedule-toolbar b { color: #425f9d; font-size: 11px; letter-spacing: .04em; }
+    .schedule-grid { display: grid; grid-template-columns: 32px repeat(4, minmax(0, 1fr)); }
+    .grid-corner, .day-head { display: grid; min-height: 49px; place-items: center; border-bottom: 1px solid #e8ecf3; background: #fafbfd; }
+    .day-head { border-left: 1px solid #e8ecf3; color: var(--muted); font-size: 9px; text-align: center; }
+    .day-head b { display: block; margin-bottom: 2px; color: var(--blue); font-family: Georgia, serif; font-size: 20px; font-weight: 400; }
+    .time-label { display: grid; height: 67px; place-items: start center; padding-top: 9px; border-bottom: 1px solid #edf0f4; color: var(--muted); font-size: 9px; }
+    .schedule-slot { position: relative; height: 67px; padding: 4px; border-left: 1px solid #edf0f4; border-bottom: 1px solid #edf0f4; background: #fff; transition: background .15s, box-shadow .15s; }
+    body.is-dragging .drag-item { pointer-events: none; }
+    .schedule-slot.drop-target { background: #edf2ff; box-shadow: inset 0 0 0 1.5px #8cacf9; }
+    .schedule-slot.empty-hint::after { position: absolute; inset: 0; display: grid; place-items: center; color: #8b9dc3; font-size: 16px; content: "+"; opacity: 0; }
+    .schedule-slot.empty-hint:hover::after, body.is-dragging .schedule-slot.empty-hint::after, .schedule-grid:has(.selected) .empty-hint::after, body:has(.pool .selected) .empty-hint::after { opacity: 1; }
+    .drag-item { position: relative; z-index: 2; border: 1px solid transparent; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; }
+    .drag-item:active { cursor: grabbing; }
+    .schedule-slot .drag-item { position: absolute; top: 4px; left: 4px; right: 4px; height: 59px; padding: 7px 3px; border-radius: 5px; border-left-width: 2px; }
+    .resize-handle { position: absolute; bottom: 3px; left: 50%; width: 22px; height: 5px; border-radius: 5px; background: rgba(28,39,58,.25); cursor: ns-resize; transform: translateX(-50%); touch-action: none; }
+    .resize-handle::after { position: absolute; inset: -5px -3px; content: ""; }
+    .pool .resize-handle { display: none; }
+    .drag-item.compact { min-height: 26px; padding: 3px; }
+    .drag-item.compact .resize-handle { bottom: 2px; height: 3px; }
+    .schedule-slot .drag-item b { display: block; overflow: hidden; font-size: 11px; font-weight: 600; line-height: 1.3; white-space: nowrap; text-overflow: ellipsis; }
+    .schedule-slot .drag-item small { display: none; }
+    .schedule-slot .drag-item.selected:not(.compact) small { display: block; margin-top: 5px; overflow: hidden; color: #506177; font-size: 9px; white-space: nowrap; text-overflow: ellipsis; }
+    .cat-food { color: #765323; background: #fff1cc; border-color: #f2d98c; }
+    .cat-place { color: #315f4f; background: #e5f3ec; border-color: #bfdfd0; }
+    .cat-travel { color: #365b9d; background: #e8efff; border-color: #c8d7fb; }
+    .cat-hotel { color: #6a5187; background: #f1eafa; border-color: #ddcef0; }
+    .cat-free { color: #687384; background: #f1f3f6; border-color: #dfe3e9; }
+    .drag-item.drag-source { opacity: .32; pointer-events: none; }
+    .drag-item.selected { box-shadow: 0 0 0 2px var(--blue); }
+    .drag-ghost { position: fixed; z-index: 100; width: 92px; padding: 8px; border-radius: 10px; box-shadow: 0 12px 30px rgba(28,43,73,.24); pointer-events: none; transform: rotate(2deg); }
+    .drag-ghost b { display: block; font-size: 9px; }
+    .drag-ghost small { display: block; margin-top: 3px; font-size: 7px; opacity: .72; }
+
+    .pool { min-height: 62px; padding: 10px; border: 1px dashed #cad2df; border-radius: 15px; background: #fafbfe; transition: background .15s, border .15s; }
+    .pool.drop-target { border-color: var(--blue); background: var(--blue-soft); }
+    .pool-items { display: flex; gap: 7px; flex-wrap: wrap; }
+    .pool .drag-item { flex: 0 1 auto; max-width: 100%; min-height: 44px; padding: 13px 10px; border-radius: 7px; }
+    .pool .drag-item b { display: block; overflow: hidden; font-size: 11px; font-weight: 550; white-space: nowrap; text-overflow: ellipsis; }
+    .pool .drag-item small { display: none; }
+    .pool-hint { margin: 11px 1px 1px; color: var(--muted); font-size: 10px; line-height: 1.6; }
+
+    .side-panel h2 { margin: 0; font-size: 23px; letter-spacing: -.04em; }
+    .side-panel > p { margin: 10px 0 28px; color: var(--muted); font-size: 12px; line-height: 1.7; }
+    .side-panel .side-kicker { margin-bottom: 14px; font-size: 10px; letter-spacing: .14em; }
+    .mode-card { display: flex; width: 100%; align-items: center; gap: 16px; padding: 20px 16px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.65); text-align: left; cursor: pointer; transition: border-color .2s, background .2s; }
+    .mode-card + .mode-card { margin-top: 12px; }
+    .mode-card:hover, .mode-card.active { border-color: #a7b8eb; background: white; }
+    .side-letter { flex: 0 0 30px; color: var(--blue); font-family: Georgia, serif; font-size: 38px; }
+    .side-copy { flex: 1; }
+    .side-copy b { display: block; font-size: 14px; }
+    .side-copy small { display: block; margin-top: 7px; color: var(--muted); font-size: 11px; line-height: 1.6; }
+    .side-arrow { color: var(--muted); font-size: 18px; }
+    .mode-card.active .side-arrow { color: var(--blue); }
+    .side-panel .shared-note { margin-top: 26px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 11px; }
+
+    .entry-screen { position: absolute; z-index: 25; inset: 0; display: flex; flex-direction: column; padding: 60px 24px 26px; overflow-y: auto; background: #fcfbf8; opacity: 1; transition: opacity .25s ease; }
+    .entry-screen.hidden { opacity: 0; pointer-events: none; }
+    .entry-screen[hidden] { display: none; }
+    .entry-context { display: flex; flex: 0 0 auto; align-items: center; gap: 6px; margin: 0; color: var(--muted); font-size: 12px; }
+    .entry-context .avatar { width: 28px; height: 28px; margin: 0 3px 0 0; border-color: #fcfbf8; }
+    .entry-context strong { color: var(--ink); font-weight: 600; }
+    .trip-ticket { position: relative; flex: 0 0 auto; margin-top: 27px; padding: 18px 20px 0; border: 1px solid #d9e0ee; border-radius: 10px; background: #fff; box-shadow: 0 5px 0 -2px #e9edf5; }
+    .ticket-kicker { color: var(--muted); font-size: 9px; letter-spacing: .15em; }
+    .ticket-destination { display: flex; align-items: center; justify-content: space-between; padding: 9px 0 19px; }
+    .ticket-destination > strong { font-family: "Songti SC", "STSong", "Noto Serif CJK SC", serif; font-size: 50px; font-weight: 700; letter-spacing: .06em; }
+    .ticket-stamp { display: grid; width: 51px; height: 51px; place-content: center; border: 1px solid #5977c2; border-radius: 50%; outline: 1px solid #b6c5e8; outline-offset: -5px; color: #4766ae; font-size: 11px; line-height: 1.4; letter-spacing: .1em; text-align: center; transform: rotate(-12deg); }
+    .ticket-footer { position: relative; display: flex; justify-content: space-between; gap: 10px; margin: 0 -20px; padding: 13px 20px; border-top: 1px dashed #cbd3e2; color: var(--muted); font-size: 10px; font-variant-numeric: tabular-nums; }
+    .ticket-footer::before, .ticket-footer::after { position: absolute; top: -6px; width: 11px; height: 11px; border: 1px solid #d9e0ee; border-radius: 50%; background: #fcfbf8; content: ""; }
+    .ticket-footer::before { left: -6px; border-left-color: transparent; border-bottom-color: transparent; transform: rotate(45deg); }
+    .ticket-footer::after { right: -6px; border-right-color: transparent; border-top-color: transparent; transform: rotate(45deg); }
+    .entry-screen h2 { flex: 0 0 auto; margin: 34px 0 23px; line-height: 1.3; }
+    .entry-title-light, .entry-title-strong { display: block; }
+    .entry-title-light { color: var(--muted); font-size: 15px; font-weight: 400; }
+    .entry-title-strong { margin-top: 5px; font-size: 29px; font-weight: 750; letter-spacing: -.04em; }
+    .entry-roles { display: grid; flex: 0 0 auto; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .entry-role { position: relative; display: flex; min-width: 0; min-height: 174px; flex-direction: column; align-items: flex-start; padding: 19px 14px 30px; border: 1px solid #d5dff7; border-radius: 14px; color: var(--ink); background: #edf2fd; text-align: left; cursor: pointer; transition: border-color .2s, box-shadow .2s; }
+    .entry-role + .entry-role { border-color: #e2dece; background: #f4f1e8; }
+    .entry-role:hover { border-color: var(--blue); box-shadow: 0 5px 18px #263e8310; }
+    .entry-role-letter { display: flex; width: 100%; align-items: center; justify-content: space-between; color: var(--blue); font-family: Georgia, serif; font-size: 46px; line-height: 1; }
+    .entry-role + .entry-role .entry-role-letter { color: #7c7052; }
+    .role-path { padding-right: 4px; font-size: 38px; font-weight: 400; }
+    .role-grid { width: 25px; height: 25px; border: 1px solid #a99b7a; background: repeating-linear-gradient(0deg, transparent 0 7px, #a99b7a 7px 8px), repeating-linear-gradient(90deg, transparent 0 7px, #a99b7a 7px 8px); }
+    .entry-role b { display: block; margin-top: 15px; font-size: 15px; }
+    .entry-role small { display: block; margin-top: 7px; color: #667082; font-size: 10px; line-height: 1.7; }
+    .entry-role-arrow { position: absolute; right: 12px; bottom: 10px; color: var(--blue); font-size: 18px; }
+    .entry-note { margin: auto 0 0; padding-top: 24px; color: var(--muted); font-size: 11px; text-align: center; }
+
+    .modal-backdrop {
+      position: absolute;
+      z-index: 40;
+      inset: 0;
+      display: grid;
+      padding: 20px;
+      place-items: center;
+      background: rgba(18,27,43,.38);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease;
+    }
+    .modal-backdrop.open { opacity: 1; pointer-events: auto; }
+    .modal { width: 100%; padding: 20px; border-radius: 23px; background: white; box-shadow: 0 24px 60px rgba(23,34,53,.24); transform: translateY(12px) scale(.98); transition: .24s ease; }
+    .open .modal { transform: translateY(0) scale(1); }
+    .modal-top { display: flex; align-items: center; justify-content: space-between; }
+    .modal-top b { font-size: 15px; }
+    .close-button { border: 0; color: #778296; background: transparent; font-size: 20px; cursor: pointer; }
+    .share-preview { margin-top: 15px; padding: 18px; border-radius: 17px; color: white; background: linear-gradient(135deg, #315fcf, #4a7bff); }
+    .share-preview small { opacity: .72; font-size: 8px; }
+    .share-preview h3 { margin: 13px 0 7px; font-size: 19px; letter-spacing: -.04em; }
+    .share-preview p { margin: 0; color: rgba(255,255,255,.78); font-size: 9px; line-height: 1.55; }
+    .modal-copy { margin: 13px 1px; color: #778296; font-size: 9px; line-height: 1.6; }
+    .primary-button { width: 100%; padding: 12px; border: 0; border-radius: 13px; color: white; background: var(--blue); font-size: 10px; font-weight: 750; cursor: pointer; }
+
+    .sheet-backdrop {
+      position: absolute;
+      z-index: 35;
+      inset: 0;
+      display: flex;
+      align-items: flex-end;
+      background: rgba(18,27,43,.34);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease;
+    }
+    .sheet-backdrop.open { opacity: 1; pointer-events: auto; }
+    .sheet { width: 100%; padding: 10px 18px 22px; border-radius: 24px 24px 0 0; background: #fff; transform: translateY(100%); transition: transform .28s ease; }
+    .open .sheet { transform: translateY(0); }
+    .sheet-handle { width: 40px; height: 4px; margin: 0 auto 17px; border-radius: 4px; background: #d8dce3; }
+    .sheet h3 { margin: 0; font-size: 17px; }
+    .sheet p { margin: 6px 0 14px; color: var(--muted); font-size: 9px; }
+    .input-wrap { display: flex; align-items: center; gap: 8px; padding: 12px; border: 1px solid var(--line); border-radius: 13px; }
+    .input-wrap svg { width: 15px; color: var(--blue); }
+    .input-wrap input { min-width: 0; flex: 1; border: 0; outline: 0; font-size: 10px; }
+    .input-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin: 10px 0 14px; }
+    .input-option { padding: 10px 2px; border: 1px solid var(--line); border-radius: 11px; background: #fafbfc; color: #6f7c90; font-size: 8px; cursor: pointer; }
+
+    .toast { position: absolute; z-index: 60; right: 18px; bottom: 18px; left: 18px; padding: 12px; border-radius: 13px; color: white; background: #202b3c; box-shadow: 0 12px 30px rgba(20,30,45,.25); font-size: 9px; text-align: center; opacity: 0; pointer-events: none; transform: translateY(12px); transition: .2s ease; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    .close-button { width: 44px; height: 44px; padding: 0; font-size: 24px; }
+    .share-preview { background: var(--blue); }
+    .share-preview h3 { font-size: 25px; line-height: 1.4; }
+    .share-preview small, .share-preview p, .modal-copy, .sheet p { font-size: 11px; line-height: 1.7; }
+    .primary-button { min-height: 48px; font-size: 13px; }
+    .primary-button:hover { background: var(--blue-dark); }
+    .input-wrap:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-soft); }
+    .input-wrap input { font-size: 16px; }
+    .input-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .input-option { min-height: 44px; font-size: 11px; }
+    .sheet { max-height: 90%; overflow-y: auto; padding-bottom: max(22px, env(safe-area-inset-bottom)); }
+    .modal { max-height: 90%; overflow-y: auto; }
+    .toast { bottom: max(18px, env(safe-area-inset-bottom)); font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
+
+    @media (max-width: 1180px) {
+      .page { grid-template-columns: minmax(0, 1fr) 390px; }
+      .side-panel, .phone-halo { display: none; }
+      .intro h1 { font-size: 46px; }
+    }
+    @media (max-width: 760px) {
+      body { background: white; }
+      .page { display: block; min-height: auto; padding: 0; }
+      .intro { display: none; }
+      .phone-wrap, .phone { width: 100%; }
+      .phone { height: 100dvh; min-height: 0; border: 0; border-radius: 0; box-shadow: none; }
+      .phone::before, .phone-halo { display: none; }
+      .screen-content { padding: max(18px, env(safe-area-inset-top)) 20px max(28px, env(safe-area-inset-bottom)); }
+      .entry-screen { padding-top: max(34px, env(safe-area-inset-top)); padding-bottom: max(24px, env(safe-area-inset-bottom)); }
+    }
+    @media (max-width: 360px) {
+      .screen-content { padding-right: 14px; padding-left: 14px; }
+      .entry-screen { padding-right: 18px; padding-left: 18px; }
+      .mode-view h2 { font-size: 25px; }
+      .destination-label { font-size: 8px; }
+      .member-stack .avatar { width: 22px; height: 22px; margin-left: -9px; }
+      .pocket { padding: 12px; }
+      .drop-core b { font-size: 13px; }
+      .schedule-slot .drag-item b { font-size: 10px; }
+      .prep-pill { padding: 11px 6px; }
+    }
+    [hidden] { display: none !important; }
+    .pocket { margin-top: 0; }
+    .prep-row { margin-top: 0; }
+    .empty-plan { margin-top: 15px; padding: 36px 15px; border-top: 1px solid var(--line); text-align: center; }
+    .empty-plan svg { display: block; width: 94px; height: 70px; margin: 0 auto 15px; color: #8a9abd; }
+    .empty-plan b { font-size: 13px; font-weight: 500; color: #56637a; }
+    .empty-plan p { margin: 10px auto 0; max-width: 245px; color: var(--muted); font-size: 11px; line-height: 1.8; }
+    .empty-add { display: flex; width: 100%; min-height: 48px; align-items: center; justify-content: center; gap: 9px; border: 0; border-radius: 9px; background: var(--blue-soft); color: var(--blue); font-size: 12px; cursor: pointer; }
+    .empty-add span { font-size: 21px; }
+    [data-scenario="empty"] .ticket-destination > strong { font-size: 40px; }
+    [data-scenario="empty"] .input-wrap { margin-bottom: 18px; }
+    [data-scenario="empty"] .prep-row, [data-scenario="empty"] .important-summary { display: none; }
+    .preview-tools { display: flex; width: max-content; max-width: calc(100% - 24px); align-items: center; justify-content: center; gap: 5px; margin: 0 auto 18px; padding: 5px 8px; border: 1px solid var(--line); border-radius: 30px; background: #fff; font-size: 11px; }
+    .preview-tools > span { padding: 0 8px; color: var(--muted); }
+    .preview-tools a { display: inline-flex; min-height: 36px; align-items: center; padding: 0 10px; border-radius: 20px; color: #55637b; text-decoration: none; }
+    .preview-tools a[aria-current], .preview-tools a:hover { background: var(--blue-soft); color: var(--blue); }
+    .embedded .preview-tools { display: none; }
+    @media (min-width: 761px) { .page { padding-bottom: 24px; } }
+    @media (max-width: 760px) { .preview-tools { margin-top: 16px; } }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="intro" aria-labelledby="page-title">
+      <div class="brand">
+        <span class="brand-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+        <span><b>一起去</b><small>One trip · Two lenses</small></span>
+      </div>
+      <p class="eyebrow">一起去 · 不必一样</p>
+      <h1 id="page-title">旅行，<br>不必<em>步调一致。</em></h1>
+      <p class="intro-copy">一个负责想去，一个喜欢安排。<br>不同的节奏，<strong>也能一起出发。</strong></p>
+      <div class="journey-mark" aria-hidden="true">
+        <svg viewBox="0 0 270 70" fill="none"><path d="M12 40C40 2 78 76 110 37S154 8 179 37S220 58 258 22" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 6"/><circle cx="12" cy="40" r="5" fill="currentColor"/><path d="m246 20 13 1-3 13" stroke="currentColor" stroke-width="1.5"/></svg>
+        <span>各有节奏，同一目的地</span>
+      </div>
+    </section>
+
+    <section class="phone-wrap" aria-label="双模式可交互原型">
+      <div class="phone-halo"></div>
+      <div class="phone">
+        <div class="phone-screen">
+          <section class="entry-screen" id="entry-screen" aria-label="选择参与方式">
+            <p class="entry-context"><span class="avatar">花</span><strong>花花</strong> 邀你一起去</p>
+            <div class="trip-ticket">
+              <span class="ticket-kicker">下一站 / NEXT STOP</span>
+              <div class="ticket-destination"><strong>成都</strong><span class="ticket-stamp" aria-hidden="true">一起<br>出发</span></div>
+              <div class="ticket-footer"><span>10.01 — 10.04</span><span>4 人 · 国庆小旅行</span></div>
+            </div>
+            <h2><span class="entry-title-light">这趟旅行，</span><span class="entry-title-strong">按你的节奏来。</span></h2>
+            <div class="entry-roles">
+              <button class="entry-role" type="button" data-entry-mode="p">
+                <span class="entry-role-letter">P<span class="role-path" aria-hidden="true">～</span></span>
+                <span><b>随心收集</b><small>先存想去的，安排慢慢来</small></span>
+                <span class="entry-role-arrow" aria-hidden="true">↗</span>
+              </button>
+              <button class="entry-role" type="button" data-entry-mode="j">
+                <span class="entry-role-letter">J<span class="role-grid" aria-hidden="true"></span></span>
+                <span><b>好好安排</b><small>把大家的想法排进行程</small></span>
+                <span class="entry-role-arrow" aria-hidden="true">↗</span>
+              </button>
+            </div>
+            <p class="entry-note">不用选定角色，随时可以切换</p>
+          </section>
+
+          <div class="screen-content" inert>
+            <header class="phone-head">
+              <div class="phone-brand"><span class="mini-brand-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>一起去</div>
+              <div class="head-actions">
+                <button class="icon-button" type="button" data-share aria-label="分享旅行">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.2 10.8 7.6-4.5M8.2 13.2l7.6 4.5"/></svg>
+                </button>
+              </div>
+            </header>
+
+            <nav class="mode-switch" aria-label="查看模式">
+              <button class="mode-button active" type="button" data-mode="p" aria-pressed="true"><span>P</span> 随心收集</button>
+              <button class="mode-button" type="button" data-mode="j" aria-pressed="false"><span>J</span> 好好安排</button>
+            </nav>
+
+            <section class="mode-view active" data-view="p" aria-label="P 人模式">
+              <article class="pocket">
+                <div class="card-head"><b>旅行口袋</b><span><span data-idea-count>9</span> 个想法</span></div>
+                <button class="drop-zone" type="button" data-add-idea>
+                  <span class="drop-core"><b>想去的，先装进口袋。</b><small>存个地点，或贴一条链接</small></span><span class="drop-plus" aria-hidden="true">+</span>
+                </button>
+                <div class="inspiration-strip" id="p-inspiration-strip" tabindex="0" role="region" aria-label="共同想法，可左右滚动">
+                  <article class="inspiration-chip"><span class="food-symbol">食</span><span><b>吃火锅</b><span class="chip-meta">花花 · 必吃</span></span></article>
+                  <article class="inspiration-chip"><span class="food-symbol">食</span><span><b>成都串串</b><span class="chip-meta">花花 · 必吃</span></span></article>
+                  <article class="inspiration-chip"><span class="food-symbol place-symbol">游</span><span><b>熊猫基地</b><span class="chip-meta">阿森 · 想去</span></span></article>
+                  <article class="inspiration-chip"><span class="food-symbol place-symbol">游</span><span><b>杜甫草堂</b><span class="chip-meta">小王 · 随缘</span></span></article>
+                  <article class="inspiration-chip"><span class="food-symbol place-symbol">游</span><span><b>青城山</b><span class="chip-meta">李李 · 想去</span></span></article>
+                  <article class="inspiration-chip"><span class="food-symbol place-symbol">游</span><span><b>人民公园</b><span class="chip-meta">花花 · 想去</span></span></article>
+                  <article class="inspiration-chip"><span class="food-symbol place-symbol">游</span><span><b>宽窄巷子</b><span class="chip-meta">小王 · 想去</span></span></article>
+                  <article class="inspiration-chip"><span class="food-symbol travel-symbol">行</span><span><b>抵达成都</b><span class="chip-meta">阿森 · 已安排</span></span></article>
+                  <article class="inspiration-chip"><span class="food-symbol travel-symbol">住</span><span><b>办理入住</b><span class="chip-meta">阿森 · 已安排</span></span></article>
+                </div>
+              </article>
+
+              <section class="plan-glance">
+                <div class="card-head"><b>行程安排</b><span id="plan-progress-label">2 天有安排</span></div>
+                <div class="empty-plan" id="empty-plan" hidden>
+                  <svg viewBox="0 0 100 70" fill="none" aria-hidden="true"><rect x="23" y="13" width="54" height="45" rx="6" stroke="currentColor"/><path d="M23 27h54M36 8v10M64 8v10M35 38h10M35 47h25" stroke="currentColor" stroke-linecap="round"/><circle cx="76" cy="53" r="10" fill="white" stroke="currentColor"/><path d="M76 48v5l3 2" stroke="currentColor" stroke-linecap="round"/></svg>
+                  <b>还没有安排</b>
+                  <p>想法排进课表后，每天去哪会出现在这里。</p>
+                </div>
+                <div class="day-glance-list">
+                  <div class="day-glance" data-day-summary="0"><span class="day-number">01<small>OCT</small></span><span class="day-copy"><b>抵达成都 · 办理入住 · 吃火锅</b></span></div>
+                  <div class="day-glance" data-day-summary="1"><span class="day-number">02<small>OCT</small></span><span class="day-copy"><b>熊猫基地 · 成都串串</b></span></div>
+                  <div class="day-glance open" data-day-summary="2"><span class="day-number">03<small>OCT</small></span><span class="day-copy"><b>留白，到了再说</b></span></div>
+                  <div class="day-glance open" data-day-summary="3"><span class="day-number">04<small>OCT</small></span><span class="day-copy"><b>留白，到了再说</b></span></div>
+                </div>
+              </section>
+
+              <details class="important-summary">
+                <summary><b>出发前，记住这几件</b><span id="prep-status">交通待确认</span><span class="disclosure-arrow" aria-hidden="true">⌄</span></summary>
+                <div class="summary-line"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m3 11 18-7-7 18-3-8-8-3Z"/></svg><span>10 月 1 日 09:40 出发</span><strong id="p-flight-state">待确认</strong></div>
+                <div class="summary-line"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V9l8-6 8 6v11"/></svg><span>春熙路附近酒店</span><strong>已订</strong></div>
+                <div class="summary-line"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/></svg><span>熊猫基地预约</span><strong>9 月 24 日</strong></div>
+              </details>
+            </section>
+
+            <section class="mode-view" data-view="j" aria-label="J 人模式">
+              <div class="prep-row" aria-label="出行准备">
+                <button class="prep-pill waiting" id="flight-action" type="button" aria-label="确认往返交通"><b>往返交通</b><span>待确认 ↗</span></button>
+                <div class="prep-pill done"><b>春熙路住宿</b><span>已确定</span></div>
+                <div class="prep-pill"><b>熊猫预约</b><span>9/24 提醒</span></div>
+              </div>
+
+              <div class="section-head"><b>行程课表</b><button class="text-action" type="button" aria-label="课表操作说明" data-toast="拖动卡片换位置，拉底边调时长；也可先点卡片，再点空格。">怎么调整？</button></div>
+              <div class="schedule-card">
+                <div class="schedule-toolbar"><b>十月 · OCTOBER</b><span>国庆小旅行</span></div>
+                <div class="schedule-grid" id="schedule-grid">
+                  <div class="grid-corner"></div><div class="day-head"><span><b>01</b>周四</span></div><div class="day-head"><span><b>02</b>周五</span></div><div class="day-head"><span><b>03</b>周六</span></div><div class="day-head"><span><b>04</b>周日</span></div>
+                  <div class="time-label">上午</div>
+                  <div class="schedule-slot" data-day="0" data-period="上午"><article class="drag-item cat-travel" data-title="抵达成都" data-owner="阿森"><b>抵达成都</b><small>阿森安排</small></article></div>
+                  <div class="schedule-slot" data-day="1" data-period="上午"><article class="drag-item cat-place" data-title="熊猫基地" data-owner="阿森" data-span="2"><b>熊猫基地</b><small>阿森安排</small></article></div>
+                  <div class="schedule-slot empty-hint" data-day="2" data-period="上午"></div>
+                  <div class="schedule-slot empty-hint" data-day="3" data-period="上午"></div>
+                  <div class="time-label">中午</div>
+                  <div class="schedule-slot empty-hint" data-day="0" data-period="中午"></div>
+                  <div class="schedule-slot empty-hint" data-day="1" data-period="中午"></div>
+                  <div class="schedule-slot empty-hint" data-day="2" data-period="中午"></div>
+                  <div class="schedule-slot empty-hint" data-day="3" data-period="中午"></div>
+                  <div class="time-label">下午</div>
+                  <div class="schedule-slot" data-day="0" data-period="下午"><article class="drag-item cat-hotel" data-title="办理入住" data-owner="阿森"><b>办理入住</b><small>阿森安排</small></article></div>
+                  <div class="schedule-slot empty-hint" data-day="1" data-period="下午"></div>
+                  <div class="schedule-slot empty-hint" data-day="2" data-period="下午"></div>
+                  <div class="schedule-slot empty-hint" data-day="3" data-period="下午"></div>
+                  <div class="time-label">晚上</div>
+                  <div class="schedule-slot" data-day="0" data-period="晚上"><article class="drag-item cat-food" data-title="吃火锅" data-owner="花花"><b>吃火锅</b><small>花花想吃</small></article></div>
+                  <div class="schedule-slot" data-day="1" data-period="晚上"><article class="drag-item cat-food" data-title="成都串串" data-owner="花花"><b>成都串串</b><small>花花想吃</small></article></div>
+                  <div class="schedule-slot empty-hint" data-day="2" data-period="晚上"></div>
+                  <div class="schedule-slot empty-hint" data-day="3" data-period="晚上"></div>
+                </div>
+              </div>
+
+              <div class="section-head"><b>还没安排的想法 <span id="pool-count">4</span></b><button class="text-action" type="button" data-add-idea>+ 添加</button></div>
+              <div class="pool" id="idea-pool" data-pool>
+                <div class="pool-items" id="place-list">
+                  <article class="drag-item cat-place" data-title="人民公园" data-owner="花花"><b>人民公园</b><small>花花添加 · 3 人想去</small></article>
+                  <article class="drag-item cat-place" data-title="宽窄巷子" data-owner="小王"><b>宽窄巷子</b><small>小王添加 · 2 人想去</small></article>
+                  <article class="drag-item cat-place" data-title="青城山" data-owner="李李"><b>青城山</b><small>李李添加 · 想去</small></article>
+                  <article class="drag-item cat-free" data-title="杜甫草堂" data-owner="小王"><b>杜甫草堂</b><small>小王添加 · 随缘</small></article>
+                </div>
+                <button class="empty-add" id="empty-add" type="button" data-add-idea hidden><span aria-hidden="true">+</span> 添加第一个想法</button>
+                <p class="pool-hint" id="pool-hint">拖进课表就安排，拖回来就留白。</p>
+              </div>
+            </section>
+          </div>
+
+          <div class="modal-backdrop" id="share-modal" aria-hidden="true" inert>
+            <div class="modal" role="dialog" aria-modal="true" aria-labelledby="share-title">
+              <div class="modal-top"><b id="share-title">邀朋友一起去</b><button class="close-button" type="button" data-close-share aria-label="关闭">×</button></div>
+              <div class="share-preview"><small>一起去 / 成都</small><h3>想去的地方，<br>和你一起去。</h3><p>10.01 — 10.04 · 国庆小旅行</p></div>
+              <p class="modal-copy">当前为本地演示，链接不包含本次修改。</p>
+              <button class="primary-button" type="button" id="copy-share">复制演示链接</button>
+            </div>
+          </div>
+
+          <div class="sheet-backdrop" id="idea-sheet" aria-hidden="true" inert>
+            <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="idea-title">
+              <div class="sheet-handle"></div>
+              <div class="modal-top"><h3 id="idea-title">存一个想去的</h3><button class="close-button" type="button" data-close-idea aria-label="关闭">×</button></div>
+              <p>不用想好哪天去，先放进共同口袋。</p>
+              <label class="input-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 13a5 5 0 0 0 7.1.1l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1"/><path d="M14 11a5 5 0 0 0-7.1-.1l-2 2A5 5 0 0 0 12 20l1.1-1.1"/></svg><input id="idea-input" type="text" maxlength="200" aria-label="地点或链接" placeholder="地点名称，或一条链接"></label>
+              <div class="input-options" aria-label="试试这些地点"><button class="input-option" type="button" data-fill="建设巷小吃街">建设巷小吃街</button><button class="input-option" type="button" data-fill="望平街散步">望平街散步</button></div>
+              <button class="primary-button" type="button" id="save-idea">放进口袋</button>
+            </div>
+          </div>
+
+          <div class="toast" id="toast" role="status" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="side-panel" aria-label="切换体验模式">
+      <p class="side-kicker">TWO WAYS, ONE TRIP</p>
+      <h2>选你的节奏</h2>
+      <p>点一下，换个角度看这趟旅行。</p>
+      <button class="mode-card" type="button" data-side-mode="p" aria-pressed="false">
+        <span class="side-letter">P</span><span class="side-copy"><b>随心收集</b><small>想去的先存着，留点空白。</small></span><span class="side-arrow" aria-hidden="true">↗</span>
+      </button>
+      <button class="mode-card" type="button" data-side-mode="j" aria-pressed="false">
+        <span class="side-letter">J</span><span class="side-copy"><b>好好安排</b><small>把大家的期待，放进四天里。</small></span><span class="side-arrow" aria-hidden="true">↗</span>
+      </button>
+      <p class="shared-note">两种看法，始终是同一份计划。</p>
+    </aside>
+  </main>
+  <nav class="preview-tools" aria-label="原型预览工具">
+    <span>预览</span><a href="?state=empty" data-scenario-link="empty">冷启动</a><a href="?state=demo" data-scenario-link="demo">有内容</a><a href="animation.html">操作动画 ↗</a>
+  </nav>
+
+  <script>
+    const isColdStart = document.documentElement.dataset.scenario === 'empty';
+    if (isColdStart) {
+      document.querySelectorAll('.drag-item, .inspiration-chip').forEach((item) => item.remove());
+      document.querySelector('.entry-context').textContent = '一起去 / 一份新的计划';
+      document.querySelector('.ticket-destination > strong').textContent = '去哪里？';
+      document.querySelector('.ticket-stamp').textContent = '待出发';
+      document.querySelector('.ticket-footer').innerHTML = '<span>目的地未定</span><span>日期未定</span>';
+      document.querySelectorAll('.day-head').forEach((head, index) => { head.innerHTML = `<span><b>${String(index + 1).padStart(2, '0')}</b>第 ${index + 1} 天</span>`; });
+      document.querySelectorAll('.day-number small').forEach((label) => { label.textContent = 'DAY'; });
+      document.querySelector('.schedule-toolbar b').textContent = '行程草稿';
+      document.querySelector('.schedule-toolbar span').textContent = '日期未定 · 先按天排';
+      document.querySelector('.prep-row').hidden = true;
+      document.querySelector('.important-summary').hidden = true;
+      document.querySelector('.input-options').hidden = true;
+      document.querySelector('.share-preview small').textContent = '一起去 / 新计划';
+      document.querySelector('.share-preview p').textContent = '目的地和日期，都可以慢慢决定。';
+      document.querySelector('#p-flight-state').textContent = '';
+      document.querySelector('#prep-status').textContent = '';
+    }
+    document.querySelectorAll('[data-scenario-link]').forEach((link) => {
+      if (link.dataset.scenarioLink === document.documentElement.dataset.scenario) link.setAttribute('aria-current', 'page');
+    });
+    const modeButtons = [...document.querySelectorAll('[data-mode]')];
+    const sideModeCards = [...document.querySelectorAll('[data-side-mode]')];
+    const modeViews = [...document.querySelectorAll('[data-view]')];
+    const shareModal = document.querySelector('#share-modal');
+    const ideaSheet = document.querySelector('#idea-sheet');
+    const ideaInput = document.querySelector('#idea-input');
+    const toast = document.querySelector('#toast');
+    const entryScreen = document.querySelector('#entry-screen');
+    const screenContent = document.querySelector('.screen-content');
+    const sidePanel = document.querySelector('.side-panel');
+    let ideaCount = document.querySelectorAll('#p-inspiration-strip .inspiration-chip').length;
+    let toastTimer;
+    let activeLayer = null;
+    let returnFocus = null;
+
+    function setMode(mode) {
+      const fromEntry = entryScreen.contains(document.activeElement);
+      modeButtons.forEach((button) => {
+        const active = button.dataset.mode === mode;
+        button.classList.toggle('active', active);
+        button.setAttribute('aria-pressed', String(active));
+      });
+      sideModeCards.forEach((card) => {
+        const active = card.dataset.sideMode === mode;
+        card.classList.toggle('active', active);
+        card.setAttribute('aria-pressed', String(active));
+      });
+      modeViews.forEach((view) => view.classList.toggle('active', view.dataset.view === mode));
+      entryScreen.classList.add('hidden');
+      entryScreen.inert = true;
+      screenContent.inert = false;
+      screenContent.scrollTop = 0;
+      if (fromEntry) modeButtons.find((button) => button.dataset.mode === mode).focus();
+      window.setTimeout(() => { entryScreen.hidden = true; }, 320);
+    }
+
+    function showToast(message) {
+      clearTimeout(toastTimer);
+      toast.textContent = message;
+      toast.classList.add('show');
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 3200);
+    }
+
+    function openLayer(layer) {
+      returnFocus = document.activeElement;
+      activeLayer = layer;
+      layer.inert = false;
+      layer.classList.add('open');
+      layer.setAttribute('aria-hidden', 'false');
+      screenContent.inert = true;
+      sidePanel.inert = true;
+      const target = layer === ideaSheet ? ideaInput : layer.querySelector('button');
+      target.focus({ preventScroll: true });
+    }
+
+    function closeLayer(layer) {
+      if (activeLayer !== layer) return;
+      layer.classList.remove('open');
+      screenContent.inert = false;
+      sidePanel.inert = false;
+      if (returnFocus && returnFocus.isConnected) returnFocus.focus({ preventScroll: true });
+      layer.inert = true;
+      layer.setAttribute('aria-hidden', 'true');
+      activeLayer = null;
+    }
+
+    let dragState = null;
+    let selectedItem = null;
+
+    const SLOT_H = 67;
+    const SLOT_PAD = 8;
+    const PERIODS = ['上午', '中午', '下午', '晚上'];
+    let resizeState = null;
+
+    function slotMaxSpan(slot, offset = 0) { return PERIODS.length - Math.max(0, PERIODS.indexOf(slot.dataset.period)) - offset; }
+
+    function applySpan(item, span, offset = Number(item.dataset.offset || 0)) {
+      const clamped = Math.max(0.5, Math.min(4, span));
+      item.dataset.span = clamped;
+      item.dataset.offset = offset;
+      item.style.height = `${clamped * SLOT_H - SLOT_PAD}px`;
+      item.classList.toggle('compact', clamped === 0.5);
+      const small = item.querySelector('small');
+      if (small) {
+        if (!item.dataset.baseSub) item.dataset.baseSub = small.textContent;
+        small.textContent = clamped !== 1 ? `${item.dataset.owner || '朋友'} · ${clamped} 个时段` : item.dataset.baseSub;
+      }
+    }
+
+    function resetToPool(item) {
+      item.dataset.span = 1;
+      item.dataset.offset = 0;
+      item.style.position = '';
+      item.style.top = '';
+      item.style.left = '';
+      item.style.width = '';
+      item.style.height = '';
+      item.style.marginTop = '';
+      item.classList.remove('compact');
+      const small = item.querySelector('small');
+      if (small && item.dataset.baseSub) small.textContent = item.dataset.baseSub;
+    }
+
+    function itemRange(el) {
+      const parent = el.closest('.schedule-slot');
+      const start = PERIODS.indexOf(parent.dataset.period) + Number(el.dataset.offset || 0);
+      return [start, start + Number(el.dataset.span || 1)];
+    }
+
+    function halfFree(slot, half, ignore) {
+      const start = PERIODS.indexOf(slot.dataset.period) + half;
+      const end = start + 0.5;
+      return [...document.querySelectorAll('.schedule-slot .drag-item')]
+        .filter(el => el !== ignore && el.closest('.schedule-slot').dataset.day === slot.dataset.day)
+        .every(el => { const [s, e] = itemRange(el); return s >= end - 0.001 || e <= start + 0.001; });
+    }
+
+    function resolveDropOffset(slot, clientY, ignore) {
+      const rect = slot.getBoundingClientRect();
+      let offset = clientY - rect.top > rect.height / 2 ? 0.5 : 0;
+      if (!halfFree(slot, offset, ignore)) {
+        const other = offset === 0.5 ? 0 : 0.5;
+        if (halfFree(slot, other, ignore)) offset = other;
+      }
+      return offset;
+    }
+
+    function layoutSlot(slot) {
+      const items = [...slot.querySelectorAll('.drag-item')];
+      items.forEach(el => { el.style.position = 'absolute'; });
+      if (!items.length) return;
+      const cards = items
+        .map(el => ({ el, start: Number(el.dataset.offset || 0), end: Number(el.dataset.offset || 0) + Number(el.dataset.span || 1) }))
+        .sort((a, b) => a.start - b.start || a.end - b.end);
+      const lanes = [];
+      cards.forEach(card => {
+        let lane = lanes.findIndex(end => end <= card.start + 0.001);
+        if (lane === -1) { lanes.push(card.end); lane = lanes.length - 1; }
+        else lanes[lane] = card.end;
+        card.lane = lane;
+      });
+      const laneCount = lanes.length;
+      cards.forEach(card => {
+        const w = 100 / laneCount;
+        card.el.style.top = `${card.start * SLOT_H + 4}px`;
+        card.el.style.left = `calc(${card.lane * w}% + ${4 - 8 * card.lane / laneCount}px)`;
+        card.el.style.width = `calc(${w}% - ${8 / laneCount}px)`;
+      });
+    }
+
+    function ensureResizeHandle(item) {
+      if (item.querySelector('.resize-handle')) return;
+      const handle = document.createElement('i');
+      handle.className = 'resize-handle';
+      handle.setAttribute('aria-hidden', 'true');
+      handle.addEventListener('pointerdown', (event) => {
+        const slot = item.closest('.schedule-slot');
+        if (!slot || event.button !== 0) return;
+        event.stopPropagation();
+        event.preventDefault();
+        resizeState = { item, slot, pointerId: event.pointerId, startY: event.clientY, startSpan: Number(item.dataset.span || 1) };
+      });
+      item.appendChild(handle);
+    }
+
+    document.addEventListener('pointermove', (event) => {
+      if (!resizeState || event.pointerId !== resizeState.pointerId) return;
+      const { item, slot, startY, startSpan } = resizeState;
+      const delta = (event.clientY - startY) / SLOT_H;
+      const snapped = Math.round((startSpan + delta) * 2) / 2;
+      const offset = Number(item.dataset.offset || 0);
+      applySpan(item, Math.min(slotMaxSpan(slot, offset), snapped), offset);
+    });
+
+    function endResize(event) {
+      if (!resizeState || event.pointerId !== resizeState.pointerId) return;
+      const { item } = resizeState;
+      resizeState = null;
+      const span = Number(item.dataset.span || 1);
+      if (span !== 1) showToast(`“${item.dataset.title}”已调整为 ${span} 个时段`);
+      updateScheduleViews();
+    }
+    document.addEventListener('pointerup', endResize);
+    document.addEventListener('pointercancel', endResize);
+
+    function updateScheduleViews() {
+      const slots = [...document.querySelectorAll('.schedule-slot')];
+      slots.forEach(layoutSlot);
+      slots.forEach((slot) => slot.classList.toggle('empty-hint', !slot.querySelector('.drag-item')));
+      let arrangedDays = 0;
+      document.querySelectorAll('[data-day-summary]').forEach((summary) => {
+        const day = summary.dataset.daySummary;
+        const titles = slots
+          .filter((slot) => slot.dataset.day === day)
+          .flatMap((slot) => [...slot.querySelectorAll('.drag-item')].map((item) => {
+            const span = Number(item.dataset.span || 1);
+            if (span >= 3) return `${item.dataset.title}·大半天`;
+            if (span >= 2) return `${item.dataset.title}·半天`;
+            if (span > 1) return `${item.dataset.title}·${span} 个时段`;
+            return item.dataset.title;
+          }));
+        const title = summary.querySelector('b');
+        summary.classList.toggle('open', titles.length === 0);
+        title.textContent = titles.length ? titles.join(' · ') : '留白，到了再说';
+        if (titles.length) arrangedDays += 1;
+      });
+      const poolCount = document.querySelectorAll('#place-list .drag-item').length;
+      const hasIdeas = document.querySelectorAll('#p-inspiration-strip .inspiration-chip').length > 0;
+      document.querySelectorAll('[data-idea-count]').forEach((node) => { node.textContent = ideaCount; });
+      document.querySelector('#p-inspiration-strip').hidden = !hasIdeas;
+      document.querySelector('.drop-core b').textContent = hasIdeas ? '想去的，先装进口袋。' : '存下第一个想去的地方';
+      document.querySelector('#plan-progress-label').textContent = arrangedDays ? `${arrangedDays} 天有安排` : '尚未安排';
+      document.querySelector('.day-glance-list').hidden = arrangedDays === 0;
+      document.querySelector('#empty-plan').hidden = arrangedDays > 0;
+      document.querySelector('#pool-count').textContent = poolCount;
+      document.querySelector('#empty-add').hidden = hasIdeas;
+      document.querySelector('#idea-pool').previousElementSibling.querySelector('[data-add-idea]').hidden = !hasIdeas;
+      document.querySelector('#pool-hint').textContent = !hasIdeas ? '先存想去的，再拖进上面的空格。' : poolCount ? '拖进课表就安排，拖回来就留白。' : '都安排好了。也可以拖回来，留一点空白。';
+    }
+
+    function clearDropTargets() {
+      document.querySelectorAll('.drop-target').forEach((target) => target.classList.remove('drop-target'));
+    }
+
+    function finishDrag(event) {
+      if (!dragState || event.pointerId !== dragState.pointerId) return;
+      const { item, moved, ghost } = dragState;
+      if (moved) {
+        const target = document.elementFromPoint(event.clientX, event.clientY);
+        const slot = target && target.closest('.schedule-slot');
+        const pool = target && target.closest('[data-pool]');
+        if (slot) {
+          const offset = resolveDropOffset(slot, event.clientY, item);
+          applySpan(item, Math.min(Number(item.dataset.span || 1), slotMaxSpan(slot, offset)), offset);
+          slot.appendChild(item);
+          showToast(`已把“${item.dataset.title}”放到 ${Number(slot.dataset.day) + 1} 日${slot.dataset.period}${offset ? ' 下半格' : ''}`);
+        } else if (pool) {
+          resetToPool(item);
+          document.querySelector('#place-list').appendChild(item);
+          showToast(`“${item.dataset.title}”已回到待安排池`);
+        }
+        if (ghost) ghost.remove();
+        item.classList.remove('drag-source');
+        clearDropTargets();
+        updateScheduleViews();
+      } else {
+        if (selectedItem) selectedItem.classList.remove('selected');
+        selectedItem = selectedItem === item ? null : item;
+        if (selectedItem) selectedItem.classList.add('selected');
+      }
+      document.body.classList.remove('is-dragging');
+      dragState = null;
+    }
+
+    function bindDrag(item) {
+      if (item.dataset.dragBound) return;
+      item.dataset.dragBound = 'true';
+      item.addEventListener('pointerdown', (event) => {
+        if (event.button !== 0) return;
+        event.preventDefault();
+        dragState = { item, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, moved: false, ghost: null };
+      });
+      ensureResizeHandle(item);
+    }
+
+    document.addEventListener('pointermove', (event) => {
+      if (!dragState || event.pointerId !== dragState.pointerId) return;
+      const distance = Math.hypot(event.clientX - dragState.startX, event.clientY - dragState.startY);
+      if (!dragState.moved && distance > 5) {
+        dragState.moved = true;
+        dragState.ghost = dragState.item.cloneNode(true);
+        dragState.ghost.classList.add('drag-ghost');
+        dragState.ghost.style.position = '';
+        dragState.ghost.style.left = '';
+        dragState.ghost.style.top = '';
+        dragState.ghost.style.width = '';
+        document.body.appendChild(dragState.ghost);
+        dragState.item.classList.add('drag-source');
+        document.body.classList.add('is-dragging');
+      }
+      if (!dragState.moved) return;
+      dragState.ghost.style.left = `${event.clientX - 46}px`;
+      dragState.ghost.style.top = `${event.clientY - 24}px`;
+      clearDropTargets();
+      const target = document.elementFromPoint(event.clientX, event.clientY);
+      const dropTarget = target && target.closest('.schedule-slot, [data-pool]');
+      if (dropTarget) dropTarget.classList.add('drop-target');
+    });
+
+    document.addEventListener('pointerup', finishDrag);
+    document.addEventListener('pointercancel', finishDrag);
+    document.querySelectorAll('.drag-item').forEach(bindDrag);
+    document.querySelectorAll('.schedule-slot .drag-item').forEach((item) => applySpan(item, Number(item.dataset.span || 1)));
+    document.querySelectorAll('.schedule-slot').forEach((slot) => {
+      slot.addEventListener('click', (event) => {
+        if (!selectedItem || event.target.closest('.drag-item')) return;
+        const clickOffset = resolveDropOffset(slot, event.clientY, selectedItem);
+        applySpan(selectedItem, Math.min(Number(selectedItem.dataset.span || 1), slotMaxSpan(slot, clickOffset)), clickOffset);
+        slot.appendChild(selectedItem);
+        showToast(`已把“${selectedItem.dataset.title}”放到 ${Number(slot.dataset.day) + 1} 日${slot.dataset.period}`);
+        selectedItem.classList.remove('selected');
+        selectedItem = null;
+        updateScheduleViews();
+      });
+    });
+    document.querySelector('#idea-pool').addEventListener('click', (event) => {
+      if (!selectedItem || event.target.closest('.drag-item')) return;
+      resetToPool(selectedItem);
+      document.querySelector('#place-list').appendChild(selectedItem);
+      selectedItem.classList.remove('selected');
+      selectedItem = null;
+      updateScheduleViews();
+    });
+    updateScheduleViews();
+
+    document.querySelectorAll('[data-entry-mode]').forEach((option) => {
+      option.addEventListener('click', () => setMode(option.dataset.entryMode));
+    });
+
+    modeButtons.forEach((button) => button.addEventListener('click', () => setMode(button.dataset.mode)));
+    sideModeCards.forEach((card) => card.addEventListener('click', () => setMode(card.dataset.sideMode)));
+
+    document.addEventListener('click', (event) => {
+      if (event.target.closest('[data-share]')) openLayer(shareModal);
+      if (event.target.closest('[data-close-share]') || event.target === shareModal) closeLayer(shareModal);
+      if (event.target.closest('[data-add-idea]')) openLayer(ideaSheet);
+      if (event.target.closest('[data-close-idea]') || event.target === ideaSheet) closeLayer(ideaSheet);
+      const fill = event.target.closest('[data-fill]');
+      if (fill) { ideaInput.value = fill.dataset.fill; ideaInput.focus(); }
+      const toastTarget = event.target.closest('[data-toast]');
+      if (toastTarget) showToast(toastTarget.dataset.toast);
+    });
+
+    document.querySelector('#copy-share').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        closeLayer(shareModal);
+        showToast('演示链接已复制；本地地址仅在当前设备可访问');
+      } catch {
+        showToast('无法访问剪贴板，请从浏览器地址栏复制');
+      }
+    });
+
+    document.querySelector('#save-idea').addEventListener('click', () => {
+      const value = ideaInput.value.trim();
+      if (!value) { showToast('先粘贴链接或写一个想去的地方'); return; }
+      ideaCount += 1;
+      document.querySelectorAll('[data-idea-count]').forEach((node) => { node.textContent = ideaCount; });
+      const displayName = value.startsWith('http') ? '一个新地点链接' : value;
+      const chip = document.createElement('article');
+      chip.className = 'inspiration-chip';
+      chip.innerHTML = '<span class="food-symbol place-symbol">新</span><span><b></b><span class="chip-meta">你 · 想去</span></span>';
+      chip.querySelector('b').textContent = displayName;
+      chip.title = displayName;
+      document.querySelector('#p-inspiration-strip').prepend(chip);
+      document.querySelector('#p-inspiration-strip').scrollLeft = 0;
+      const poolItem = document.createElement('article');
+      poolItem.className = 'drag-item cat-place';
+      poolItem.dataset.title = displayName;
+      poolItem.dataset.owner = '你';
+      poolItem.title = displayName;
+      const poolTitle = document.createElement('b');
+      poolTitle.textContent = displayName;
+      const poolMeta = document.createElement('small');
+      poolMeta.textContent = '你 · 想去';
+      poolItem.append(poolTitle, poolMeta);
+      document.querySelector('#place-list').prepend(poolItem);
+      bindDrag(poolItem);
+      updateScheduleViews();
+      ideaInput.value = '';
+      closeLayer(ideaSheet);
+      showToast('已放进口袋，两种模式都能看到');
+    });
+
+    document.querySelector('#flight-action').addEventListener('click', (event) => {
+      const button = event.currentTarget;
+      button.querySelector('span').textContent = '已确认';
+      button.classList.remove('waiting');
+      button.classList.add('done');
+      button.setAttribute('aria-label', '往返交通已确认');
+      document.querySelector('#p-flight-state').textContent = '已确认';
+      document.querySelector('#prep-status').textContent = '9/24 预约提醒';
+      showToast('交通已确认，出行摘要已更新');
+    });
+
+    ideaInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' && !event.isComposing) {
+        event.preventDefault();
+        document.querySelector('#save-idea').click();
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') { closeLayer(shareModal); closeLayer(ideaSheet); }
+      if (event.key !== 'Tab' || !activeLayer) return;
+      const focusable = [...activeLayer.querySelectorAll('button:not([disabled]), input:not([disabled])')];
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    });
+  </script>
+</body>
+</html>

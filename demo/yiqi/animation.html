@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f3ef">
+  <title>一起去 · 从空白到出发｜操作动画</title>
+  <style>
+    :root { --ink: #202c3e; --muted: #687387; --blue: #3158d5; --line: #dfe4ed; }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: radial-gradient(ellipse at 60% 40%, #e8edf8, transparent 60%), #f4f3ef; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; -webkit-font-smoothing: antialiased; }
+    button, select { font: inherit; }
+    a { color: inherit; text-decoration: none; }
+    :focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
+    .topbar { display: flex; max-width: 1250px; align-items: center; justify-content: space-between; margin: auto; padding: 26px 32px; }
+    .brand { font-weight: 700; font-size: 17px; }
+    .brand span { display: inline-grid; width: 28px; height: 28px; margin-right: 8px; place-items: center; border-radius: 8px; color: white; background: var(--blue); }
+    .back-link { padding: 10px 0; font-size: 12px; color: var(--muted); }
+    .studio { display: grid; grid-template-columns: minmax(230px, 1fr) 390px minmax(190px, .7fr); gap: 48px; max-width: 1250px; align-items: center; margin: auto; padding: 15px 32px 38px; }
+    .eyebrow { margin: 0 0 24px; color: var(--blue); font-size: 10px; letter-spacing: .15em; }
+    h1 { margin: 0; font-size: clamp(32px, 3.3vw, 46px); line-height: 1.35; letter-spacing: -.06em; font-weight: 650; }
+    h1 em { color: var(--blue); font-style: normal; }
+    .lede { max-width: 270px; margin: 22px 0 0; color: var(--muted); font-size: 13px; line-height: 1.9; }
+    .steps { display: grid; gap: 0; margin: 36px 0 0; padding: 0; list-style: none; }
+    .steps li { display: flex; gap: 12px; align-items: center; min-height: 46px; color: #788295; font-size: 12px; }
+    .steps li > span { display: grid; width: 26px; height: 26px; place-items: center; border: 1px solid #d4dbe7; border-radius: 50%; font-family: Georgia, serif; font-size: 12px; }
+    .steps li[aria-current="step"] { color: var(--blue); font-weight: 650; }
+    .steps li[aria-current="step"] > span { border-color: var(--blue); color: white; background: var(--blue); }
+    .steps li.done > span { color: var(--blue); border-color: #a6b7e8; }
+    .stage { min-width: 0; }
+    .device { position: relative; width: 100%; height: 750px; overflow: hidden; border: 7px solid #242932; border-radius: 38px; background: #fff; box-shadow: 0 28px 70px #2533561c; }
+    .device::before { position: absolute; z-index: 5; top: 0; left: 50%; width: 88px; height: 19px; border-radius: 0 0 13px 13px; background: #242932; transform: translateX(-50%); content: ""; }
+    iframe { display: block; width: 100%; height: 100%; border: 0; pointer-events: none; }
+    .load-note { position: absolute; z-index: 7; inset: 0; display: grid; place-content: center; padding: 26px; background: white; color: var(--muted); font-size: 13px; line-height: 1.8; text-align: center; }
+    [hidden] { display: none !important; }
+    .under-device { display: flex; justify-content: space-between; margin: 17px 5px 0; color: var(--muted); font-size: 10px; letter-spacing: .03em; }
+    .chapter { color: var(--blue); font-family: Georgia, serif; font-size: 40px; }
+    .story h2 { margin: 14px 0 12px; font-size: 20px; font-weight: 650; letter-spacing: -.04em; }
+    .story p { min-height: 74px; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.9; }
+    .technique { display: inline-block; margin-top: 18px; padding: 7px 10px; border: 1px solid #d9e1f0; border-radius: 6px; background: #ffffff85; color: #576f9e; font-size: 10px; }
+    .controls { margin-top: 34px; padding-top: 22px; border-top: 1px solid #d9dfe9; }
+    progress { display: block; width: 100%; height: 3px; margin-bottom: 20px; border: 0; border-radius: 4px; accent-color: var(--blue); }
+    progress::-webkit-progress-bar { border-radius: 4px; background: #dfe4ed; }
+    progress::-webkit-progress-value { border-radius: 4px; background: var(--blue); }
+    .buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+    button { min-height: 44px; padding: 10px 17px; border: 1px solid var(--line); border-radius: 9px; background: #fff; color: #4e607d; cursor: pointer; }
+    #play { min-width: 88px; border-color: var(--blue); color: white; background: var(--blue); }
+    button:disabled { opacity: .5; cursor: wait; }
+    .speed-row { display: flex; align-items: center; justify-content: space-between; margin-top: 17px; color: var(--muted); font-size: 11px; }
+    select { min-height: 36px; padding: 5px; border: 0; color: #52678e; background: transparent; cursor: pointer; }
+    .try-link { display: inline-flex; min-height: 44px; align-items: center; margin-top: 26px; color: var(--blue); font-size: 12px; }
+    .footnote { max-width: 1186px; margin: 0 auto 24px; padding: 0 32px; color: #778195; font-size: 10px; line-height: 1.8; text-align: center; }
+    @media (max-width: 1080px) {
+      .studio { grid-template-columns: minmax(230px, 1fr) 390px; gap: 32px; max-width: 860px; }
+      .stage { grid-column: 2; grid-row: 1 / 3; }
+      .story { grid-column: 1; }
+      .steps { grid-template-columns: 1fr 1fr; gap: 0 10px; margin-top: 20px; }
+      .steps li { font-size: 11px; }
+      .story p { min-height: 0; }
+      .chapter { font-size: 30px; }
+      .controls { margin-top: 24px; }
+    }
+    @media (max-width: 720px) {
+      .topbar { padding: 14px 20px; }
+      .studio { display: flex; flex-direction: column; gap: 24px; padding: 10px 16px 24px; }
+      .intro { width: min(390px, 100%); }
+      .eyebrow { margin-bottom: 12px; }
+      h1 { font-size: 28px; }
+      h1 br { display: none; }
+      .lede { max-width: none; margin-top: 10px; font-size: 12px; }
+      .steps { display: none; }
+      .stage { width: min(390px, 100%); }
+      .device { height: 730px; border-width: 6px; border-radius: 32px; }
+      .story { width: min(390px, 100%); }
+      .chapter { float: left; margin-right: 15px; font-size: 32px; }
+      .story h2 { margin-top: 3px; }
+      .story p { clear: both; }
+      .technique { margin-top: 10px; }
+      .controls { position: fixed; z-index: 20; inset: auto 0 0; display: grid; grid-template-columns: 1fr auto; gap: 8px 16px; margin: 0; padding: 10px 16px max(10px, env(safe-area-inset-bottom)); background: #fdfdfbf5; box-shadow: 0 -5px 20px #25335612; }
+      .controls progress { grid-column: 1 / -1; margin: 0; }
+      .controls .speed-row { margin: 0; gap: 8px; }
+      .controls .speed-row label { display: none; }
+      .footnote { margin-bottom: 110px; }
+      .try-link { margin-top: 12px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <header class="topbar"><a class="brand" href="index.html?state=empty"><span aria-hidden="true">↗</span>一起去</a><a class="back-link" href="index.html?state=empty">返回可交互原型 ↗</a></header>
+  <main class="studio">
+    <section class="intro">
+      <p class="eyebrow">PRODUCT IN MOTION / 操作演示</p>
+      <h1>一份空白，<br>变成<em>一起的计划。</em></h1>
+      <p class="lede">从零开始。看一个想法如何被收集、安排，再变成简单的每日行程。</p>
+      <ol class="steps" aria-label="演示步骤">
+        <li aria-current="step"><span>01</span>从空白进入</li>
+        <li><span>02</span>存下第一个想法</li>
+        <li><span>03</span>切到 J 人视角</li>
+        <li><span>04</span>拖进一个时间格</li>
+        <li><span>05</span>拉长停留时间</li>
+        <li><span>06</span>回到 P 人视角</li>
+      </ol>
+    </section>
+    <section class="stage" aria-label="产品操作动画">
+      <div class="device"><iframe id="product" title="一起去实际产品操作演示" tabindex="-1"></iframe><div class="load-note" id="load-note">正在准备空白计划…</div></div>
+      <div class="under-device"><span id="play-state" role="status">准备中</span><span>真实页面 · 无预置内容</span></div>
+    </section>
+    <section class="story" aria-label="当前操作与播放控制">
+      <div aria-live="polite" aria-atomic="true"><span class="chapter" id="chapter">01</span><h2 id="scene-title">从空白进入</h2><p id="scene-copy">没有目的地、日期，也没有替你填好的攻略。选一种方式，就能开始。</p></div>
+      <span class="technique" id="technique">点击指示</span>
+      <div class="controls">
+        <progress id="progress" max="6" value="0" aria-label="演示进度"></progress>
+        <div class="buttons"><button type="button" id="play" disabled>播放</button><button type="button" id="replay" disabled>重播</button></div>
+        <div class="speed-row"><label for="speed">播放速度</label><select id="speed"><option value="1">1× 正常</option><option value="1.5">1.5×</option><option value="2">2×</option></select></div>
+      </div>
+      <a class="try-link" href="index.html?state=empty">自己从空白试试 ↗</a>
+    </section>
+  </main>
+  <p class="footnote">演示使用原型中的真实输入、拖拽和状态联动；不代表已接入多人在线同步。课表保留四天草稿格，未设置出发日期。</p>
+  <script>
+    const frame = document.querySelector('#product');
+    const playButton = document.querySelector('#play');
+    const replayButton = document.querySelector('#replay');
+    const loadNote = document.querySelector('#load-note');
+    const playState = document.querySelector('#play-state');
+    const progress = document.querySelector('#progress');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const scenes = [
+      ['从空白进入', '没有目的地、日期，也没有替你填好的攻略。选一种方式，就能开始。', '点击指示'],
+      ['存下第一个想法', '打开口袋，输入「人民公园」。保存后，空白变成第一张想法卡。', '逐字输入 + 保存反馈'],
+      ['换个角度，内容还在', '切换 J 人模式。刚存的地点已经在待安排区，不需要再填一次。', '视角切换 + 内容承接'],
+      ['拖进一个时间格', '按住「人民公园」，拖到第 1 天下午。卡片跟手移动，落点高亮。', '跟手拖拽 + 落点高亮'],
+      ['多留一点时间', '拉动卡片底边，将停留时间从一格延长到一格半。', '边缘拉伸 + 半格吸附'],
+      ['安排变成一句话', '回到 P 人模式。刚才的安排已经变成每日轮廓，不必再读整张课表。', '同一内容 · 两种呈现']
+    ];
+    let controller;
+    let paused = true;
+    let ended = false;
+    let speed = 1;
+    let doc;
+    let cursor;
+    let focusBox;
+    let cursorPoint = { x: 180, y: 300 };
+
+    function updatePlayback() {
+      playButton.textContent = ended ? '再看一次' : paused ? '播放' : '暂停';
+      playState.textContent = ended ? '演示完成' : paused ? '已暂停' : '正在演示';
+    }
+
+    function animate(duration, update, signal) {
+      return new Promise((resolve, reject) => {
+        let elapsed = 0;
+        let last = performance.now();
+        let request;
+        const abort = () => { cancelAnimationFrame(request); reject(new DOMException('Cancelled', 'AbortError')); };
+        if (signal.aborted) { abort(); return; }
+        signal.addEventListener('abort', abort, { once: true });
+        const tick = (now) => {
+          const delta = Math.min(now - last, 80);
+          last = now;
+          if (!paused && !document.hidden) {
+            elapsed += delta * speed;
+            update?.(Math.min(1, elapsed / duration));
+          }
+          if (elapsed >= duration) { signal.removeEventListener('abort', abort); resolve(); }
+          else request = requestAnimationFrame(tick);
+        };
+        request = requestAnimationFrame(tick);
+      });
+    }
+    const wait = (duration, signal) => animate(duration, null, signal);
+
+    function positionCursor(point) {
+      cursorPoint = point;
+      cursor.style.left = `${point.x}px`;
+      cursor.style.top = `${point.y}px`;
+    }
+
+    async function moveCursor(point, signal) {
+      const start = { ...cursorPoint };
+      cursor.style.opacity = '1';
+      await animate(reducedMotion.matches ? 50 : 550, (t) => {
+        const eased = t * t * (3 - 2 * t);
+        positionCursor({ x: start.x + (point.x - start.x) * eased, y: start.y + (point.y - start.y) * eased });
+      }, signal);
+    }
+
+    async function reveal(element, signal) {
+      element.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'instant' });
+      await wait(350, signal);
+      const rect = element.getBoundingClientRect();
+      return { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 };
+    }
+
+    async function highlight(element, signal, duration = 1500) {
+      await reveal(element, signal);
+      const rect = element.getBoundingClientRect();
+      Object.assign(focusBox.style, { left: `${rect.left - 3}px`, top: `${rect.top - 3}px`, width: `${rect.width + 6}px`, height: `${rect.height + 6}px`, opacity: '1' });
+      await wait(duration, signal);
+      focusBox.style.opacity = '0';
+    }
+
+    async function click(selector, signal) {
+      const element = doc.querySelector(selector);
+      if (!element) throw new Error(`找不到演示操作：${selector}`);
+      await moveCursor(await reveal(element, signal), signal);
+      cursor.classList.add('pressed');
+      await wait(180, signal);
+      element.click();
+      cursor.classList.remove('pressed');
+      await wait(600, signal);
+    }
+
+    function pointer(target, type, point) {
+      target.dispatchEvent(new frame.contentWindow.PointerEvent(type, {
+        bubbles: true, cancelable: true, pointerId: 7, pointerType: 'mouse', isPrimary: true,
+        button: 0, buttons: type === 'pointerup' ? 0 : 1, clientX: point.x, clientY: point.y
+      }));
+    }
+
+    async function drag(source, destination, signal) {
+      await moveCursor(await reveal(source, signal), signal);
+      pointer(source, 'pointerdown', cursorPoint);
+      cursor.classList.add('pressed');
+      await wait(350, signal);
+      const start = { ...cursorPoint };
+      await animate(reducedMotion.matches ? 80 : 1700, (t) => {
+        const eased = t * t * (3 - 2 * t);
+        const point = { x: start.x + (destination.x - start.x) * eased, y: start.y + (destination.y - start.y) * eased };
+        positionCursor(point);
+        pointer(doc, 'pointermove', point);
+      }, signal);
+      await wait(450, signal);
+      pointer(doc, 'pointerup', destination);
+      cursor.classList.remove('pressed');
+      await wait(800, signal);
+    }
+
+    function showScene(index) {
+      document.querySelector('#chapter').textContent = String(index + 1).padStart(2, '0');
+      document.querySelector('#scene-title').textContent = scenes[index][0];
+      document.querySelector('#scene-copy').textContent = scenes[index][1];
+      document.querySelector('#technique').textContent = scenes[index][2];
+      document.querySelectorAll('.steps li').forEach((item, i) => {
+        item.classList.toggle('done', i < index);
+        if (i === index) item.setAttribute('aria-current', 'step');
+        else item.removeAttribute('aria-current');
+      });
+      progress.value = index;
+    }
+
+    async function run(signal) {
+      showScene(0);
+      await wait(1800, signal);
+      await click('[data-entry-mode="p"]', signal);
+      await wait(1800, signal);
+      showScene(1);
+      await click('.drop-zone', signal);
+      await click('#idea-input', signal);
+      const input = doc.querySelector('#idea-input');
+      for (const letter of '人民公园') {
+        input.value += letter;
+        input.dispatchEvent(new frame.contentWindow.Event('input', { bubbles: true }));
+        await wait(260, signal);
+      }
+      await wait(600, signal);
+      await click('#save-idea', signal);
+      await highlight(doc.querySelector('.inspiration-chip'), signal);
+      showScene(2);
+      await click('[data-mode="j"]', signal);
+      await highlight(doc.querySelector('#idea-pool'), signal, 1700);
+      showScene(3);
+      const source = doc.querySelector('#place-list .drag-item');
+      await reveal(source, signal);
+      const slot = doc.querySelector('.schedule-slot[data-day="0"][data-period="下午"]');
+      const rect = slot.getBoundingClientRect();
+      await drag(source, { x: rect.x + rect.width / 2, y: rect.y + 13 }, signal);
+      if (!slot.contains(source)) throw new Error('卡片没有落入目标课表格');
+      await highlight(source, signal, 1000);
+      showScene(4);
+      const handle = source.querySelector('.resize-handle');
+      const handlePoint = await reveal(handle, signal);
+      await drag(handle, { x: handlePoint.x, y: handlePoint.y + 34 }, signal);
+      if (source.dataset.span !== '1.5') throw new Error('卡片时长未更新');
+      await highlight(source, signal, 1400);
+      showScene(5);
+      await click('[data-mode="p"]', signal);
+      await highlight(doc.querySelector('[data-day-summary="0"]'), signal, 2500);
+      cursor.style.opacity = '0';
+      progress.value = 6;
+      ended = true;
+      paused = true;
+      updatePlayback();
+    }
+
+    function loadFrame(signal) {
+      return new Promise((resolve, reject) => {
+        const cleanup = () => { clearTimeout(timeout); frame.removeEventListener('load', loaded); signal.removeEventListener('abort', aborted); };
+        const aborted = () => { cleanup(); reject(new DOMException('Cancelled', 'AbortError')); };
+        const loaded = () => {
+          cleanup();
+          try {
+            doc = frame.contentDocument;
+            if (!doc?.querySelector('.drop-zone')) throw new Error('请通过本地 HTTP 服务打开此动画，并将 index.html 放在同一目录。');
+            const style = doc.createElement('style');
+            style.textContent = '.screen-content{padding-top:34px!important}.demo-cursor{position:fixed;z-index:150;width:23px;height:23px;margin:-11px 0 0 -11px;border:2px solid #3158d5;border-radius:50%;background:#ffffffb3;box-shadow:0 0 0 6px #3158d51c;pointer-events:none;opacity:0}.demo-cursor.pressed{background:#3158d580;box-shadow:0 0 0 9px #3158d520}.demo-focus{position:fixed;z-index:140;border:2px solid #3158d5;border-radius:12px;box-shadow:0 0 0 5px #3158d510;pointer-events:none;opacity:0}';
+            doc.head.appendChild(style);
+            cursor = doc.createElement('div');
+            cursor.className = 'demo-cursor';
+            cursor.setAttribute('aria-hidden', 'true');
+            focusBox = doc.createElement('div');
+            focusBox.className = 'demo-focus';
+            focusBox.setAttribute('aria-hidden', 'true');
+            doc.body.append(cursor, focusBox);
+            cursorPoint = { x: frame.clientWidth / 2, y: 300 };
+            resolve();
+          } catch (error) { reject(error); }
+        };
+        const timeout = setTimeout(() => { cleanup(); reject(new Error('产品页面加载超时，请检查本地服务后重播。')); }, 10000);
+        frame.addEventListener('load', loaded);
+        signal.addEventListener('abort', aborted, { once: true });
+        frame.src = `index.html?state=empty&embed=1&run=${Date.now()}`;
+      });
+    }
+
+    async function restart(autoplay = true) {
+      controller?.abort();
+      controller = new AbortController();
+      const { signal } = controller;
+      ended = false;
+      paused = !autoplay;
+      playButton.disabled = true;
+      replayButton.disabled = true;
+      loadNote.hidden = false;
+      loadNote.textContent = '正在准备空白计划…';
+      showScene(0);
+      try {
+        await loadFrame(signal);
+        if (signal.aborted) return;
+        loadNote.hidden = true;
+        playButton.disabled = false;
+        replayButton.disabled = false;
+        updatePlayback();
+        await run(signal);
+      } catch (error) {
+        if (error.name === 'AbortError' || signal.aborted) return;
+        paused = true;
+        ended = true;
+        loadNote.hidden = false;
+        loadNote.textContent = error.message;
+        playState.textContent = '演示未完成，请重播';
+        playButton.disabled = true;
+        replayButton.disabled = false;
+      }
+    }
+
+    playButton.addEventListener('click', () => {
+      if (ended) { restart(true); return; }
+      paused = !paused;
+      updatePlayback();
+    });
+    replayButton.addEventListener('click', () => restart(!reducedMotion.matches));
+    document.querySelector('#speed').addEventListener('change', (event) => { speed = Number(event.target.value); });
+    document.addEventListener('keydown', (event) => {
+      if (event.code === 'Space' && event.target === document.body) { event.preventDefault(); if (!playButton.disabled) playButton.click(); }
+    });
+    window.addEventListener('pagehide', () => controller?.abort());
+    reducedMotion.addEventListener('change', () => { if (reducedMotion.matches && !ended) { paused = true; updatePlayback(); } });
+    restart(!reducedMotion.matches);
+  </script>
+</body>
+</html>

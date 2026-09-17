@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f3ef">
+  <title>一起去 · 操作动画</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      background: #f4f3ef;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    .device {
+      position: relative;
+      width: min(390px, 100%);
+      height: min(750px, calc(100vh - 32px));
+      overflow: hidden;
+      border: 7px solid #242932;
+      border-radius: 38px;
+      background: #fff;
+      box-shadow: 0 28px 70px #2533561c;
+    }
+    .device::before {
+      position: absolute;
+      z-index: 5;
+      top: 0;
+      left: 50%;
+      width: 88px;
+      height: 19px;
+      border-radius: 0 0 13px 13px;
+      background: #242932;
+      transform: translateX(-50%);
+      content: "";
+    }
+    iframe { display: block; width: 100%; height: 100%; border: 0; pointer-events: none; }
+    .load-note {
+      position: absolute;
+      z-index: 7;
+      inset: 0;
+      display: grid;
+      place-content: center;
+      padding: 26px;
+      background: white;
+      color: #687387;
+      font-size: 13px;
+      line-height: 1.8;
+      text-align: center;
+    }
+    [hidden] { display: none !important; }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <div class="device">
+    <iframe id="product" title="一起去实际产品操作演示" tabindex="-1"></iframe>
+    <div class="load-note" id="load-note">正在准备空白计划…</div>
+  </div>
+  <script>
+    const frame = document.querySelector('#product');
+    const loadNote = document.querySelector('#load-note');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let controller;
+    let speed = 1;
+    let doc;
+    let cursor;
+    let focusBox;
+    let cursorPoint = { x: 180, y: 300 };
+
+    function animate(duration, update, signal) {
+      return new Promise((resolve, reject) => {
+        let elapsed = 0;
+        let last = performance.now();
+        let request;
+        const abort = () => { cancelAnimationFrame(request); reject(new DOMException('Cancelled', 'AbortError')); };
+        if (signal.aborted) { abort(); return; }
+        signal.addEventListener('abort', abort, { once: true });
+        const tick = (now) => {
+          const delta = Math.min(now - last, 80);
+          last = now;
+          if (!document.hidden) {
+            elapsed += delta * speed;
+            update?.(Math.min(1, elapsed / duration));
+          }
+          if (elapsed >= duration) { signal.removeEventListener('abort', abort); resolve(); }
+          else request = requestAnimationFrame(tick);
+        };
+        request = requestAnimationFrame(tick);
+      });
+    }
+    const wait = (duration, signal) => animate(duration, null, signal);
+
+    function positionCursor(point) {
+      cursorPoint = point;
+      cursor.style.left = `${point.x}px`;
+      cursor.style.top = `${point.y}px`;
+    }
+
+    async function moveCursor(point, signal) {
+      const start = { ...cursorPoint };
+      cursor.style.opacity = '1';
+      await animate(reducedMotion.matches ? 50 : 550, (t) => {
+        const eased = t * t * (3 - 2 * t);
+        positionCursor({ x: start.x + (point.x - start.x) * eased, y: start.y + (point.y - start.y) * eased });
+      }, signal);
+    }
+
+    async function reveal(element, signal) {
+      element.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'instant' });
+      await wait(350, signal);
+      const rect = element.getBoundingClientRect();
+      return { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 };
+    }
+
+    async function highlight(element, signal, duration = 1500) {
+      await reveal(element, signal);
+      const rect = element.getBoundingClientRect();
+      Object.assign(focusBox.style, { left: `${rect.left - 3}px`, top: `${rect.top - 3}px`, width: `${rect.width + 6}px`, height: `${rect.height + 6}px`, opacity: '1' });
+      await wait(duration, signal);
+      focusBox.style.opacity = '0';
+    }
+
+    async function click(selector, signal) {
+      const element = doc.querySelector(selector);
+      if (!element) throw new Error(`找不到演示操作：${selector}`);
+      await moveCursor(await reveal(element, signal), signal);
+      cursor.classList.add('pressed');
+      await wait(180, signal);
+      element.click();
+      cursor.classList.remove('pressed');
+      await wait(600, signal);
+    }
+
+    function pointer(target, type, point) {
+      target.dispatchEvent(new frame.contentWindow.PointerEvent(type, {
+        bubbles: true, cancelable: true, pointerId: 7, pointerType: 'mouse', isPrimary: true,
+        button: 0, buttons: type === 'pointerup' ? 0 : 1, clientX: point.x, clientY: point.y
+      }));
+    }
+
+    async function drag(source, destination, signal) {
+      await moveCursor(await reveal(source, signal), signal);
+      pointer(source, 'pointerdown', cursorPoint);
+      cursor.classList.add('pressed');
+      await wait(350, signal);
+      const start = { ...cursorPoint };
+      await animate(reducedMotion.matches ? 80 : 1700, (t) => {
+        const eased = t * t * (3 - 2 * t);
+        const point = { x: start.x + (destination.x - start.x) * eased, y: start.y + (destination.y - start.y) * eased };
+        positionCursor(point);
+        pointer(doc, 'pointermove', point);
+      }, signal);
+      await wait(450, signal);
+      pointer(doc, 'pointerup', destination);
+      cursor.classList.remove('pressed');
+      await wait(800, signal);
+    }
+
+    async function run(signal) {
+      await wait(1800, signal);
+      await click('[data-entry-mode="p"]', signal);
+      await wait(1800, signal);
+      await click('.drop-zone', signal);
+      await click('#idea-input', signal);
+      const input = doc.querySelector('#idea-input');
+      for (const letter of '人民公园') {
+        input.value += letter;
+        input.dispatchEvent(new frame.contentWindow.Event('input', { bubbles: true }));
+        await wait(260, signal);
+      }
+      await wait(600, signal);
+      await click('#save-idea', signal);
+      await highlight(doc.querySelector('.inspiration-chip'), signal);
+      await click('[data-mode="j"]', signal);
+      await highlight(doc.querySelector('#idea-pool'), signal, 1700);
+      const source = doc.querySelector('#place-list .drag-item');
+      await reveal(source, signal);
+      const slot = doc.querySelector('.schedule-slot[data-day="0"][data-period="下午"]');
+      const rect = slot.getBoundingClientRect();
+      await drag(source, { x: rect.x + rect.width / 2, y: rect.y + 13 }, signal);
+      if (!slot.contains(source)) throw new Error('卡片没有落入目标课表格');
+      await highlight(source, signal, 1000);
+      const handle = source.querySelector('.resize-handle');
+      const handlePoint = await reveal(handle, signal);
+      await drag(handle, { x: handlePoint.x, y: handlePoint.y + 34 }, signal);
+      if (source.dataset.span !== '1.5') throw new Error('卡片时长未更新');
+      await highlight(source, signal, 1400);
+      await click('[data-mode="p"]', signal);
+      await highlight(doc.querySelector('[data-day-summary="0"]'), signal, 2500);
+      cursor.style.opacity = '0';
+    }
+
+    function loadFrame(signal) {
+      return new Promise((resolve, reject) => {
+        const cleanup = () => { clearTimeout(timeout); frame.removeEventListener('load', loaded); signal.removeEventListener('abort', aborted); };
+        const aborted = () => { cleanup(); reject(new DOMException('Cancelled', 'AbortError')); };
+        const loaded = () => {
+          cleanup();
+          try {
+            doc = frame.contentDocument;
+            if (!doc?.querySelector('.drop-zone')) throw new Error('请通过 HTTP 服务打开此动画，并将 index.html 放在同一目录。');
+            const style = doc.createElement('style');
+            style.textContent = '.screen-content{padding-top:34px!important}.demo-cursor{position:fixed;z-index:150;width:23px;height:23px;margin:-11px 0 0 -11px;border:2px solid #3158d5;border-radius:50%;background:#ffffffb3;box-shadow:0 0 0 6px #3158d51c;pointer-events:none;opacity:0}.demo-cursor.pressed{background:#3158d580;box-shadow:0 0 0 9px #3158d520}.demo-focus{position:fixed;z-index:140;border:2px solid #3158d5;border-radius:12px;box-shadow:0 0 0 5px #3158d510;pointer-events:none;opacity:0}';
+            doc.head.appendChild(style);
+            cursor = doc.createElement('div');
+            cursor.className = 'demo-cursor';
+            cursor.setAttribute('aria-hidden', 'true');
+            focusBox = doc.createElement('div');
+            focusBox.className = 'demo-focus';
+            focusBox.setAttribute('aria-hidden', 'true');
+            doc.body.append(cursor, focusBox);
+            cursorPoint = { x: frame.clientWidth / 2, y: 300 };
+            resolve();
+          } catch (error) { reject(error); }
+        };
+        const timeout = setTimeout(() => { cleanup(); reject(new Error('产品页面加载超时，请重试。')); }, 10000);
+        frame.addEventListener('load', loaded);
+        signal.addEventListener('abort', aborted, { once: true });
+        frame.src = `index.html?state=empty&embed=1&run=${Date.now()}`;
+      });
+    }
+
+    async function loop() {
+      controller?.abort();
+      controller = new AbortController();
+      const { signal } = controller;
+      loadNote.hidden = false;
+      loadNote.textContent = '正在准备空白计划…';
+      try {
+        await loadFrame(signal);
+        if (signal.aborted) return;
+        loadNote.hidden = true;
+        await run(signal);
+        if (signal.aborted) return;
+        await wait(2600, signal);
+      } catch (error) {
+        if (error.name === 'AbortError' || signal.aborted) return;
+        loadNote.hidden = false;
+        loadNote.textContent = error.message;
+        return;
+      }
+      loop();
+    }
+
+    window.addEventListener('pagehide', () => controller?.abort());
+    loop();
+  </script>
+</body>
+</html>

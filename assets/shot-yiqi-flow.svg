@@ -1,0 +1,317 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2040 960" width="2040" height="960" font-family="'PingFang SC','Microsoft YaHei',sans-serif">
+  <!-- 画布背景（可删除/改色） -->
+  <rect id="canvas-bg" x="0" y="0" width="2040" height="960" rx="24" fill="#f7f8fb"/>
+
+  <!-- ===== 顶部标题区 ===== -->
+  <g id="header">
+    <text id="title" x="1020" y="66" text-anchor="middle" font-family="Georgia,'Songti SC',serif" font-size="36" font-weight="700" fill="#202c3e">一起去 · 双模式交互流程</text>
+    <text id="subtitle" x="1020" y="102" text-anchor="middle" font-size="14" fill="#687387">选节奏 → P 收集 · 旅行口袋 → J 安排 · 行程课表 → 调时长 · 边缘拉伸 → 双呈现 · 同一份计划</text>
+    <text id="tagline" x="1020" y="128" text-anchor="middle" font-size="11" letter-spacing="2" fill="#9aa5bd">ONE TRIP · TWO LENSES</text>
+  </g>
+
+  <!-- ============================================================ -->
+  <!-- Step 1 · 选节奏（入口）  px=70 -->
+  <!-- ============================================================ -->
+  <g id="step-1-choose-pace">
+    <g id="step-1-label">
+      <rect x="70" y="170" width="300" height="50" rx="12" fill="#fff8e8" stroke="#eadfc9"/>
+      <text x="220" y="201" text-anchor="middle" font-family="Georgia,'Songti SC',serif" font-size="17" font-weight="600" fill="#202c3e">① 选节奏 · 入口</text>
+    </g>
+    <g id="step-1-phone">
+      <rect x="70" y="240" width="300" height="620" rx="42" fill="#ffffff" stroke="#20242d" stroke-width="7"/>
+      <rect x="175" y="240" width="90" height="20" rx="10" fill="#20242d"/>
+      <!-- 旅行票卡 -->
+      <g id="step-1-ticket">
+        <rect x="88" y="276" width="264" height="112" rx="10" fill="#ffffff" stroke="#d9e0ee"/>
+        <text x="104" y="300" font-size="9" letter-spacing="1.5" fill="#687387">下一站 / NEXT STOP</text>
+        <text x="104" y="352" font-family="Georgia,'Songti SC',serif" font-size="42" font-weight="700" fill="#202c3e">成都</text>
+        <g id="step-1-stamp">
+          <circle cx="316" cy="322" r="23" fill="none" stroke="#5977c2" stroke-width="1.5"/>
+          <circle cx="316" cy="322" r="18" fill="none" stroke="#b6c5e8" stroke-width="1"/>
+          <text x="316" y="319" text-anchor="middle" font-size="9" fill="#4766ae">一起</text>
+          <text x="316" y="331" text-anchor="middle" font-size="9" fill="#4766ae">出发</text>
+        </g>
+        <line x1="96" y1="362" x2="344" y2="362" stroke="#cbd3e2" stroke-dasharray="4 4"/>
+        <text x="104" y="380" font-size="10" fill="#687387">10.01 — 10.04</text>
+        <text x="336" y="380" text-anchor="end" font-size="10" fill="#687387">4 人 · 国庆小旅行</text>
+      </g>
+      <!-- 标题 -->
+      <text x="88" y="424" font-size="14" fill="#687387">这趟旅行，</text>
+      <text x="88" y="458" font-size="24" font-weight="700" fill="#202c3e">按你的节奏来。</text>
+      <!-- 角色卡 P -->
+      <g id="step-1-role-p">
+        <rect x="88" y="486" width="127" height="118" rx="12" fill="#edf2fd" stroke="#d5dff7"/>
+        <text x="102" y="528" font-family="Georgia,serif" font-size="38" fill="#3158d5">P</text>
+        <text x="102" y="562" font-size="13" font-weight="700" fill="#202c3e">随心收集</text>
+        <text x="102" y="584" font-size="9" fill="#667082">先存想去的，安排慢慢来</text>
+      </g>
+      <!-- 角色卡 J -->
+      <g id="step-1-role-j">
+        <rect x="225" y="486" width="127" height="118" rx="12" fill="#f4f1e8" stroke="#e2dece"/>
+        <text x="239" y="528" font-family="Georgia,serif" font-size="38" fill="#7c7052">J</text>
+        <text x="239" y="562" font-size="13" font-weight="700" fill="#202c3e">好好安排</text>
+        <text x="239" y="584" font-size="9" fill="#667082">把大家的想法排进行程</text>
+      </g>
+      <text x="220" y="640" text-anchor="middle" font-size="10" fill="#687387">不用选定角色，随时可以切换</text>
+    </g>
+  </g>
+
+  <!-- ============================================================ -->
+  <!-- Step 2 · P 收集（旅行口袋）  px=470 -->
+  <!-- ============================================================ -->
+  <g id="step-2-collect">
+    <g id="step-2-label">
+      <rect x="470" y="170" width="300" height="50" rx="12" fill="#fff8e8" stroke="#eadfc9"/>
+      <text x="620" y="201" text-anchor="middle" font-family="Georgia,'Songti SC',serif" font-size="17" font-weight="600" fill="#202c3e">② P 收集 · 旅行口袋</text>
+    </g>
+    <g id="step-2-phone">
+      <rect x="470" y="240" width="300" height="620" rx="42" fill="#ffffff" stroke="#20242d" stroke-width="7"/>
+      <rect x="575" y="240" width="90" height="20" rx="10" fill="#20242d"/>
+      <!-- P/J 开关（P 选中） -->
+      <g id="step-2-switch">
+        <rect x="488" y="276" width="264" height="40" rx="10" fill="#f0f2f6"/>
+        <rect x="492" y="280" width="128" height="32" rx="7" fill="#ffffff"/>
+        <text x="556" y="301" text-anchor="middle" font-size="11" font-weight="700" fill="#3158d5">P 随心收集</text>
+        <text x="688" y="301" text-anchor="middle" font-size="11" fill="#687387">J 好好安排</text>
+      </g>
+      <!-- 旅行口袋 -->
+      <g id="step-2-pocket">
+        <rect x="488" y="332" width="264" height="152" rx="14" fill="#eff3fc" stroke="#e1e6f2"/>
+        <text x="504" y="358" font-size="13" font-weight="700" fill="#202c3e">旅行口袋</text>
+        <text x="736" y="358" text-anchor="end" font-size="11" fill="#687387">9 个想法</text>
+        <g id="step-2-dropzone">
+          <rect x="504" y="370" width="232" height="52" rx="10" fill="#3158d5"/>
+          <text x="612" y="393" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">想去的，先装进口袋</text>
+          <text x="612" y="411" text-anchor="middle" font-size="9" fill="#e3eaff">存个地点，或贴一条链接</text>
+          <circle cx="716" cy="396" r="14" fill="#ffffff"/>
+          <text x="716" y="401" text-anchor="middle" font-size="18" fill="#3158d5">+</text>
+        </g>
+        <!-- 想法 chips -->
+        <g id="step-2-chips">
+          <rect x="504" y="434" width="72" height="40" rx="8" fill="#ffffff" stroke="#e4e8f1"/>
+          <text x="514" y="452" font-size="11" fill="#765323">食</text>
+          <text x="514" y="467" font-size="9" fill="#202c3e">吃火锅</text>
+          <rect x="584" y="434" width="72" height="40" rx="8" fill="#ffffff" stroke="#e4e8f1"/>
+          <text x="594" y="452" font-size="11" fill="#315f4f">游</text>
+          <text x="594" y="467" font-size="9" fill="#202c3e">熊猫基地</text>
+          <rect x="664" y="434" width="72" height="40" rx="8" fill="#ffffff" stroke="#e4e8f1"/>
+          <text x="674" y="452" font-size="11" fill="#6a5187">住</text>
+          <text x="674" y="467" font-size="9" fill="#202c3e">办理入住</text>
+        </g>
+      </g>
+      <!-- 行程安排 -->
+      <g id="step-2-plan">
+        <text x="488" y="524" font-size="13" font-weight="700" fill="#202c3e">行程安排</text>
+        <text x="752" y="524" text-anchor="end" font-size="11" fill="#687387">2 天有安排</text>
+        <line x1="488" y1="540" x2="752" y2="540" stroke="#e0e4eb"/>
+        <text x="492" y="574" font-family="Georgia,serif" font-size="20" fill="#3158d5">01</text>
+        <text x="530" y="570" font-size="11" fill="#202c3e">抵达成都 · 办理入住 · 吃火锅</text>
+        <line x1="488" y1="586" x2="752" y2="586" stroke="#e0e4eb"/>
+        <text x="492" y="620" font-family="Georgia,serif" font-size="20" fill="#3158d5">02</text>
+        <text x="530" y="616" font-size="11" fill="#202c3e">熊猫基地 · 成都串串</text>
+        <line x1="488" y1="632" x2="752" y2="632" stroke="#e0e4eb"/>
+        <text x="492" y="666" font-family="Georgia,serif" font-size="20" fill="#747c8a">03</text>
+        <text x="530" y="662" font-size="11" fill="#747c8a">留白，到了再说</text>
+        <line x1="488" y1="678" x2="752" y2="678" stroke="#e0e4eb"/>
+        <text x="492" y="712" font-family="Georgia,serif" font-size="20" fill="#747c8a">04</text>
+        <text x="530" y="708" font-size="11" fill="#747c8a">留白，到了再说</text>
+        <line x1="488" y1="724" x2="752" y2="724" stroke="#e0e4eb"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- ============================================================ -->
+  <!-- Step 3 · J 安排（行程课表）  px=870 -->
+  <!-- ============================================================ -->
+  <g id="step-3-schedule">
+    <g id="step-3-label">
+      <rect x="870" y="170" width="300" height="50" rx="12" fill="#fff8e8" stroke="#eadfc9"/>
+      <text x="1020" y="201" text-anchor="middle" font-family="Georgia,'Songti SC',serif" font-size="17" font-weight="600" fill="#202c3e">③ J 安排 · 行程课表</text>
+    </g>
+    <g id="step-3-phone">
+      <rect x="870" y="240" width="300" height="620" rx="42" fill="#ffffff" stroke="#20242d" stroke-width="7"/>
+      <rect x="975" y="240" width="90" height="20" rx="10" fill="#20242d"/>
+      <!-- P/J 开关（J 选中） -->
+      <g id="step-3-switch">
+        <rect x="888" y="276" width="264" height="40" rx="10" fill="#f0f2f6"/>
+        <text x="956" y="301" text-anchor="middle" font-size="11" fill="#687387">P 随心收集</text>
+        <rect x="1024" y="280" width="128" height="32" rx="7" fill="#ffffff"/>
+        <text x="1088" y="301" text-anchor="middle" font-size="11" font-weight="700" fill="#3158d5">J 好好安排</text>
+      </g>
+      <!-- 出行准备 pills -->
+      <g id="step-3-prep">
+        <rect x="888" y="332" width="82" height="46" rx="8" fill="#fff8e8" stroke="#e7d8b8"/>
+        <text x="929" y="352" text-anchor="middle" font-size="10" font-weight="600" fill="#202c3e">往返交通</text>
+        <text x="929" y="368" text-anchor="middle" font-size="9" fill="#866427">待确认</text>
+        <rect x="978" y="332" width="82" height="46" rx="8" fill="#ffffff" stroke="#e0e4eb"/>
+        <text x="1019" y="352" text-anchor="middle" font-size="10" font-weight="600" fill="#202c3e">春熙路住宿</text>
+        <text x="1019" y="368" text-anchor="middle" font-size="9" fill="#376d57">已确定</text>
+        <rect x="1068" y="332" width="84" height="46" rx="8" fill="#ffffff" stroke="#e0e4eb"/>
+        <text x="1110" y="352" text-anchor="middle" font-size="10" font-weight="600" fill="#202c3e">熊猫预约</text>
+        <text x="1110" y="368" text-anchor="middle" font-size="9" fill="#687387">9/24 提醒</text>
+      </g>
+      <!-- 行程课表 -->
+      <text x="888" y="412" font-size="13" font-weight="700" fill="#202c3e">行程课表</text>
+      <text x="1152" y="412" text-anchor="end" font-size="10" fill="#3158d5">怎么调整？</text>
+      <g id="step-3-grid">
+        <rect x="888" y="424" width="264" height="298" rx="10" fill="#ffffff" stroke="#d7deeb"/>
+        <rect x="888" y="424" width="264" height="30" rx="10" fill="#eef3fc"/>
+        <text x="902" y="443" font-size="10" font-weight="600" fill="#425f9d">十月 · OCTOBER</text>
+        <!-- 列标题 -->
+        <text x="954" y="476" text-anchor="middle" font-family="Georgia,serif" font-size="16" fill="#3158d5">01</text>
+        <text x="1014" y="476" text-anchor="middle" font-family="Georgia,serif" font-size="16" fill="#3158d5">02</text>
+        <text x="1074" y="476" text-anchor="middle" font-family="Georgia,serif" font-size="16" fill="#3158d5">03</text>
+        <text x="1134" y="476" text-anchor="middle" font-family="Georgia,serif" font-size="16" fill="#3158d5">04</text>
+        <!-- 行标签 -->
+        <text x="906" y="522" text-anchor="middle" font-size="9" fill="#687387">上午</text>
+        <text x="906" y="578" text-anchor="middle" font-size="9" fill="#687387">中午</text>
+        <text x="906" y="634" text-anchor="middle" font-size="9" fill="#687387">下午</text>
+        <text x="906" y="690" text-anchor="middle" font-size="9" fill="#687387">晚上</text>
+        <!-- 网格线 -->
+        <line x1="888" y1="486" x2="1152" y2="486" stroke="#e8ecf3"/>
+        <line x1="924" y1="486" x2="924" y2="722" stroke="#edf0f4"/>
+        <line x1="888" y1="542" x2="1152" y2="542" stroke="#edf0f4"/>
+        <line x1="888" y1="598" x2="1152" y2="598" stroke="#edf0f4"/>
+        <line x1="888" y1="654" x2="1152" y2="654" stroke="#edf0f4"/>
+        <line x1="984" y1="486" x2="984" y2="722" stroke="#edf0f4"/>
+        <line x1="1044" y1="486" x2="1044" y2="722" stroke="#edf0f4"/>
+        <line x1="1104" y1="486" x2="1104" y2="722" stroke="#edf0f4"/>
+        <!-- 课表卡 -->
+        <g id="step-3-cards">
+          <rect x="928" y="490" width="52" height="48" rx="4" fill="#e8efff" stroke="#c8d7fb"/>
+          <text x="954" y="512" text-anchor="middle" font-size="8" fill="#365b9d">抵达成都</text>
+          <rect x="928" y="602" width="52" height="48" rx="4" fill="#f1eafa" stroke="#ddcef0"/>
+          <text x="954" y="624" text-anchor="middle" font-size="8" fill="#6a5187">办理入住</text>
+          <rect x="928" y="658" width="52" height="48" rx="4" fill="#fff1cc" stroke="#f2d98c"/>
+          <text x="954" y="680" text-anchor="middle" font-size="8" fill="#765323">吃火锅</text>
+          <rect x="988" y="490" width="52" height="104" rx="4" fill="#e5f3ec" stroke="#bfdfd0"/>
+          <text x="1014" y="540" text-anchor="middle" font-size="8" fill="#315f4f">熊猫基地</text>
+          <rect x="988" y="658" width="52" height="48" rx="4" fill="#fff1cc" stroke="#f2d98c"/>
+          <text x="1014" y="680" text-anchor="middle" font-size="8" fill="#765323">成都串串</text>
+        </g>
+      </g>
+      <!-- 待安排池 -->
+      <text x="888" y="756" font-size="12" font-weight="700" fill="#202c3e">还没安排的想法 4</text>
+      <g id="step-3-pool">
+        <rect x="888" y="766" width="264" height="72" rx="12" fill="#fafbfe" stroke="#cad2df" stroke-dasharray="5 4"/>
+        <rect x="898" y="778" width="76" height="48" rx="6" fill="#e5f3ec" stroke="#bfdfd0"/>
+        <text x="936" y="800" text-anchor="middle" font-size="9" fill="#315f4f">人民公园</text>
+        <rect x="982" y="778" width="76" height="48" rx="6" fill="#e5f3ec" stroke="#bfdfd0"/>
+        <text x="1020" y="800" text-anchor="middle" font-size="9" fill="#315f4f">宽窄巷子</text>
+        <rect x="1066" y="778" width="76" height="48" rx="6" fill="#f1f3f6" stroke="#dfe3e9"/>
+        <text x="1104" y="800" text-anchor="middle" font-size="9" fill="#687384">青城山</text>
+      </g>
+      <!-- 拖拽箭头：池 → 课表空格 -->
+      <g id="step-3-drag-arrow">
+        <path d="M1020 770 C 1020 700 1074 660 1074 560" fill="none" stroke="#3158d5" stroke-width="2.5" stroke-dasharray="5 4"/>
+        <path d="M1074 552 l-7 12 7 -3 7 3 z" fill="#3158d5"/>
+        <circle cx="1020" cy="770" r="5" fill="#3158d5"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- ============================================================ -->
+  <!-- Step 4 · 调时长（边缘拉伸）  px=1270 -->
+  <!-- ============================================================ -->
+  <g id="step-4-resize">
+    <g id="step-4-label">
+      <rect x="1270" y="170" width="300" height="50" rx="12" fill="#fff8e8" stroke="#eadfc9"/>
+      <text x="1420" y="201" text-anchor="middle" font-family="Georgia,'Songti SC',serif" font-size="17" font-weight="600" fill="#202c3e">④ 调时长 · 边缘拉伸</text>
+    </g>
+    <g id="step-4-phone">
+      <rect x="1270" y="240" width="300" height="620" rx="42" fill="#ffffff" stroke="#20242d" stroke-width="7"/>
+      <rect x="1375" y="240" width="90" height="20" rx="10" fill="#20242d"/>
+      <text x="1288" y="292" font-size="13" font-weight="700" fill="#202c3e">行程课表 · 第 2 天</text>
+      <g id="step-4-grid">
+        <rect x="1288" y="304" width="264" height="360" rx="10" fill="#ffffff" stroke="#d7deeb"/>
+        <!-- 行标签 -->
+        <text x="1314" y="356" text-anchor="middle" font-size="9" fill="#687387">上午</text>
+        <text x="1314" y="436" text-anchor="middle" font-size="9" fill="#687387">中午</text>
+        <text x="1314" y="516" text-anchor="middle" font-size="9" fill="#687387">下午</text>
+        <text x="1314" y="596" text-anchor="middle" font-size="9" fill="#687387">晚上</text>
+        <!-- 横线 -->
+        <line x1="1288" y1="384" x2="1552" y2="384" stroke="#edf0f4"/>
+        <line x1="1288" y1="464" x2="1552" y2="464" stroke="#edf0f4"/>
+        <line x1="1288" y1="544" x2="1552" y2="544" stroke="#edf0f4"/>
+        <line x1="1288" y1="624" x2="1552" y2="624" stroke="#edf0f4"/>
+        <line x1="1340" y1="304" x2="1340" y2="664" stroke="#edf0f4"/>
+        <!-- 拉长占 1.5 格的卡（下午 + 半个晚上） -->
+        <g id="step-4-long-card">
+          <rect x="1346" y="470" width="200" height="118" rx="6" fill="#e5f3ec" stroke="#bfdfd0"/>
+          <text x="1446" y="512" text-anchor="middle" font-size="12" font-weight="600" fill="#315f4f">熊猫基地</text>
+          <text x="1446" y="532" text-anchor="middle" font-size="10" fill="#506177">阿森 · 1.5 个时段</text>
+          <!-- resize handle -->
+          <rect x="1435" y="578" width="22" height="5" rx="2.5" fill="#1c273a" opacity="0.3"/>
+        </g>
+        <!-- 半格吸附提示虚线 -->
+        <line x1="1346" y1="584" x2="1546" y2="584" stroke="#3158d5" stroke-width="1.5" stroke-dasharray="4 3"/>
+      </g>
+      <!-- 上下拖提示箭头 -->
+      <g id="step-4-resize-hint">
+        <line x1="1570" y1="500" x2="1570" y2="560" stroke="#3158d5" stroke-width="2.5"/>
+        <path d="M1570 492 l-6 10 6 -3 6 3 z" fill="#3158d5"/>
+        <path d="M1570 568 l-6 -10 6 3 6 -3 z" fill="#3158d5"/>
+      </g>
+      <!-- 说明文字 -->
+      <text x="1420" y="716" text-anchor="middle" font-size="13" font-weight="700" fill="#202c3e">拉卡片底边，调停留时长</text>
+      <text x="1420" y="740" text-anchor="middle" font-size="10" fill="#687387">松手自动吸附半格，最长占满四段</text>
+    </g>
+  </g>
+
+  <!-- ============================================================ -->
+  <!-- Step 5 · 双呈现（同一份计划）  px=1670 -->
+  <!-- ============================================================ -->
+  <g id="step-5-dual-view">
+    <g id="step-5-label">
+      <rect x="1670" y="170" width="300" height="50" rx="12" fill="#fff8e8" stroke="#eadfc9"/>
+      <text x="1820" y="201" text-anchor="middle" font-family="Georgia,'Songti SC',serif" font-size="17" font-weight="600" fill="#202c3e">⑤ 双呈现 · 同一份计划</text>
+    </g>
+    <g id="step-5-phone">
+      <rect x="1670" y="240" width="300" height="620" rx="42" fill="#ffffff" stroke="#20242d" stroke-width="7"/>
+      <rect x="1775" y="240" width="90" height="20" rx="10" fill="#20242d"/>
+      <text x="1820" y="290" text-anchor="middle" font-size="13" font-weight="700" fill="#3158d5">同一份计划</text>
+      <!-- P 视角 -->
+      <g id="step-5-p-view">
+        <text x="1688" y="322" font-size="11" font-weight="700" fill="#687387">P · 每日轮廓</text>
+        <line x1="1688" y1="336" x2="1952" y2="336" stroke="#e0e4eb"/>
+        <text x="1692" y="368" font-family="Georgia,serif" font-size="17" fill="#3158d5">01</text>
+        <text x="1726" y="364" font-size="11" fill="#202c3e">抵达成都 · 入住 · 吃火锅</text>
+        <text x="1692" y="408" font-family="Georgia,serif" font-size="17" fill="#3158d5">02</text>
+        <text x="1726" y="404" font-size="11" fill="#202c3e">熊猫基地 · 成都串串</text>
+        <text x="1692" y="448" font-family="Georgia,serif" font-size="17" fill="#747c8a">03</text>
+        <text x="1726" y="444" font-size="11" fill="#747c8a">留白，到了再说</text>
+        <text x="1692" y="488" font-family="Georgia,serif" font-size="17" fill="#747c8a">04</text>
+        <text x="1726" y="484" font-size="11" fill="#747c8a">留白，到了再说</text>
+      </g>
+      <!-- 分隔虚线 -->
+      <line x1="1688" y1="516" x2="1952" y2="516" stroke="#cbd3e2" stroke-dasharray="5 4"/>
+      <!-- J 视角 -->
+      <g id="step-5-j-view">
+        <text x="1688" y="546" font-size="11" font-weight="700" fill="#687387">J · 行程课表</text>
+        <g id="step-5-mini-grid">
+          <rect x="1688" y="556" width="264" height="220" rx="8" fill="#ffffff" stroke="#d7deeb"/>
+          <line x1="1688" y1="556" x2="1688" y2="776" stroke="#edf0f4"/>
+          <line x1="1754" y1="556" x2="1754" y2="776" stroke="#edf0f4"/>
+          <line x1="1820" y1="556" x2="1820" y2="776" stroke="#edf0f4"/>
+          <line x1="1886" y1="556" x2="1886" y2="776" stroke="#edf0f4"/>
+          <line x1="1688" y1="611" x2="1952" y2="611" stroke="#edf0f4"/>
+          <line x1="1688" y1="666" x2="1952" y2="666" stroke="#edf0f4"/>
+          <line x1="1688" y1="721" x2="1952" y2="721" stroke="#edf0f4"/>
+          <rect x="1692" y="560" width="58" height="46" rx="3" fill="#e8efff" stroke="#c8d7fb"/>
+          <rect x="1692" y="670" width="58" height="46" rx="3" fill="#fff1cc" stroke="#f2d98c"/>
+          <rect x="1758" y="560" width="58" height="102" rx="3" fill="#e5f3ec" stroke="#bfdfd0"/>
+          <rect x="1758" y="725" width="58" height="46" rx="3" fill="#fff1cc" stroke="#f2d98c"/>
+        </g>
+      </g>
+      <text x="1820" y="820" text-anchor="middle" font-size="10" fill="#687387">两种看法，始终是同一份计划</text>
+    </g>
+  </g>
+
+  <!-- ===== 连接箭头 ===== -->
+  <g id="flow-arrows" stroke="#3158d5" fill="#3158d5">
+    <g id="arrow-1"><line x1="384" y1="545" x2="456" y2="545" stroke-width="2.5"/><path d="M456 545 l-11 -6 v12 z" stroke="none"/></g>
+    <g id="arrow-2"><line x1="784" y1="545" x2="856" y2="545" stroke-width="2.5"/><path d="M856 545 l-11 -6 v12 z" stroke="none"/></g>
+    <g id="arrow-3"><line x1="1184" y1="545" x2="1256" y2="545" stroke-width="2.5"/><path d="M1256 545 l-11 -6 v12 z" stroke="none"/></g>
+    <g id="arrow-4"><line x1="1584" y1="545" x2="1656" y2="545" stroke-width="2.5"/><path d="M1656 545 l-11 -6 v12 z" stroke="none"/></g>
+  </g>
+</svg>
